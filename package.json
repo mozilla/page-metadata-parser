@@ -1,0 +1,24 @@
+{
+  "name": "page-metadata-parser",
+  "version": "0.1.0",
+  "description": "A Javascript library for parsing metadata in a Web Page.",
+  "main": "parser.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/page-metadata-parser.git"
+  },
+  "keywords": [
+    "page",
+    "metadata",
+    "parser"
+  ],
+  "author": "Jared Kerim",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla/page-metadata-parser/issues"
+  },
+  "homepage": "https://github.com/mozilla/page-metadata-parser#readme"
+}
