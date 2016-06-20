@@ -1,0 +1,3 @@
+[submodule "fathom"]
+	path = fathom
+	url = https://github.com/mozilla/fathom
