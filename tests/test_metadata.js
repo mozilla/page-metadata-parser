@@ -5,13 +5,6 @@ const jsdom = require('jsdom');
 
 const {rules, getMetadata} = require('../parser.js');
 
-//const titleRules = buildRuleset('title', [
-//  ['meta[property="og:title"]', node => node.element.content],
-//  ['meta[property="twitter:title"]', node => node.element.content],
-//  ['meta[name="hdl"]', node => node.element.content],
-//  ['title', node => node.element.text],
-//]);
-
 
 describe('Title Rule Tests', function() {
   it('finds og:title', function() {
@@ -60,5 +53,32 @@ describe('Title Rule Tests', function() {
       `);
       const title = rules.title(document);
       assert.equal(title, 'Title');
+  });
+});
+
+
+describe('Canonical URL Rule Tests', function() {
+  it('finds og:url', function() {
+      const document = jsdom.jsdom(`
+        <html>
+          <head>
+            <meta property="og:url" content="http://www.example.com/" />
+          </head>
+        </html>
+      `);
+      const url = rules.url(document);
+      assert.equal(url, 'http://www.example.com/');
+  });
+
+  it('finds rel=canonical', function() {
+      const document = jsdom.jsdom(`
+        <html>
+          <head>
+            <link rel="canonical" href="http://www.example.com/" />
+          </head>
+        </html>
+      `);
+      const url = rules.url(document);
+      assert.equal(url, 'http://www.example.com/');
   });
 });
