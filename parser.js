@@ -1,4 +1,4 @@
-const {dom, rule, ruleset} = require('./fathom/index');
+const {dom, rule, ruleset} = require('fathom-web');
 
 
 function buildRuleset(name, rules) {
@@ -78,7 +78,7 @@ const metadataRules = {
 function getMetadata(document) {
   let metadata = {};
 
-  Object.keys(metadataRules).each(key => {
+  Object.keys(metadataRules).map(key => {
     const rule = metadataRules[key];
     metadata[key] = rule(document);
   });
