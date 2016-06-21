@@ -4,7 +4,7 @@
   "description": "A Javascript library for parsing metadata in a Web Page.",
   "main": "parser.js",
   "scripts": {
-    "test": "npm test"
+    "test:lint": "./node_modules/eslint/bin/eslint.js ."
   },
   "repository": {
     "type": "git",
@@ -22,13 +22,11 @@
   },
   "homepage": "https://github.com/mozilla/page-metadata-parser#readme",
   "dependencies": {
+    "fathom-web": "^1.0.0",
     "wu": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "0.0.3"
-  },
-  "scripts": {
-    "test:lint": "./node_modules/eslint/bin/eslint.js ."
   }
 }
