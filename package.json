@@ -4,8 +4,8 @@
   "description": "A Javascript library for parsing metadata in a Web Page.",
   "main": "parser.js",
   "scripts": {
-    "test:lint": "./node_modules/eslint/bin/eslint.js .",
-    "test:mocha": "mocha tests/",
+    "test:lint": "./node_modules/eslint/bin/eslint.js ./parser.js",
+    "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha -- tests/* -R spec",
     "test": "./node_modules/npm-run-all/bin/npm-run-all/index.js test:*"
   },
   "repository": {
@@ -31,6 +31,7 @@
     "chai": "^3.5.0",
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "0.0.3",
+    "istanbul": "^0.4.4",
     "jsdom": "^9.2.1",
     "mocha": "^2.5.3",
     "npm-run-all": "^2.2.0"
