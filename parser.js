@@ -70,7 +70,7 @@ const metadataRules = {
   url: canonicalUrlRules,
   title: titleRules,
   description: descriptionRules,
-  favicon_url: iconRules,
+  icon_url: iconRules,
   image: imageRules,
 };
 

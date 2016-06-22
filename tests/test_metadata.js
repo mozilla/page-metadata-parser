@@ -51,3 +51,20 @@ describe('Canonical URL Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.url, pageUrl, testTag));
 });
+
+
+describe('Icon Rule Tests', function() {
+  const pageIcon = 'http://www.example.com/favicon.ico';
+
+  const ruleTests = [
+    ['apple-touch-icon', `<link rel="apple-touch-icon" href="${pageIcon}" />`],
+    ['apple-touch-icon-precomposed', `<link rel="apple-touch-icon-precomposed" href="${pageIcon}" />`],
+    ['icon', `<link rel="icon" href="${pageIcon}" />`],
+    ['fluid-icon', `<link rel="fluid-icon" href="${pageIcon}" />`],
+    ['shortcut icon', `<link rel="shortcut icon" href="${pageIcon}" />`],
+    ['Shortcut Icon', `<link rel="Shortcut Icon" href="${pageIcon}" />`],
+    ['mask-icon', `<link rel="mask-icon" href="${pageIcon}" />`],
+  ];
+
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.icon_url, pageIcon, testTag));
+});
