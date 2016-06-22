@@ -68,3 +68,16 @@ describe('Icon Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.icon_url, pageIcon, testTag));
 });
+
+describe('Image Rule Tests', function() {
+  const pageImage = 'http://www.example.com/image.png';
+
+  const ruleTests = [
+    ['og:image', `<meta property="og:image" content="${pageImage}" />`],
+    ['twitter:image', `<meta property="twitter:image" content="${pageImage}" />`],
+    ['thumbnail', `<meta name="thumbnail" content="${pageImage}" />`],
+    ['img', `<img src="${pageImage}" />`],
+  ];
+
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.image_url, pageImage, testTag));
+});

@@ -71,7 +71,7 @@ const metadataRules = {
   title: titleRules,
   description: descriptionRules,
   icon_url: iconRules,
-  image: imageRules,
+  image_url: imageRules,
 };
 
 
