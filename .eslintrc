@@ -19,15 +19,11 @@
   },
   "plugins": [
     "mozilla",
-    "react"
   ],
   "extends": [
     "eslint:recommended"
   ],
   "rules": {
-    "react/jsx-uses-react": 1,
-    "react/jsx-uses-vars": 1,
-
     "mozilla/components-imports": 1,
     "mozilla/import-globals-from": 1,
     "mozilla/this-top-level-scope": 1,
