@@ -78,9 +78,9 @@ const metadataRules = {
 function getMetadata(document) {
   let metadata = {};
 
-  Object.keys(metadataRules).map(key => {
-    const rule = metadataRules[key];
-    metadata[key] = rule(document);
+  Object.keys(metadataRules).map(metadataKey => {
+    const metadataRule = metadataRules[metadataKey];
+    metadata[metadataKey] = metadataRule(document);
   });
 
   return metadata;
