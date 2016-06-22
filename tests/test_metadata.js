@@ -94,3 +94,14 @@ describe('Description Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.description, pageDescription, testTag));
 });
+
+
+describe('Type Rule Tests', function() {
+  const pageType = 'article';
+
+  const ruleTests = [
+    ['og:type', `<meta property="og:type" content="${pageType}" />`],
+  ];
+
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.type, pageType, testTag));
+});
