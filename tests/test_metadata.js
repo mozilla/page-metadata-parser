@@ -17,47 +17,37 @@ function buildHTML(tag) {
 }
 
 
+function ruleTest(testName, testRule, expected, testTag) {
+  it(`finds ${testName}`, () => {
+    const html = buildHTML(testTag);
+    const document = jsdom.jsdom(html);
+    const found = testRule(document);
+    assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
+  });
+}
+
+
 describe('Title Rule Tests', function() {
   const pageTitle = 'Page Title';
 
-  it('finds og:title', () => {
-      const document = jsdom.jsdom(buildHTML(`<meta property="og:title" content="${pageTitle}" />`));
-      const foundTitle = rules.title(document);
-      assert.equal(foundTitle, pageTitle);
-  });
+  const ruleTests = [
+    ['og:title', `<meta property="og:title" content="${pageTitle}" />`],
+    ['twitter:title', `<meta property="twitter:title" content="${pageTitle}" />`],
+    ['hdl', `<meta name="hdl" content="${pageTitle}" />`],
+    ['title', `<title>${pageTitle}</title>`],
+  ];
 
-  it('finds twitter:title', () => {
-      const document = jsdom.jsdom(buildHTML(`<meta property="twitter:title" content="${pageTitle}" />`));
-      const foundTitle = rules.title(document);
-      assert.equal(foundTitle, pageTitle);
-  });
-
-  it('finds hdl', function() {
-      const document = jsdom.jsdom(buildHTML(`<meta name="hdl" content="${pageTitle}" />`));
-      const foundTitle = rules.title(document);
-      assert.equal(foundTitle, pageTitle);
-  });
-
-  it('finds title', function() {
-      const document = jsdom.jsdom(buildHTML(`<title>${pageTitle}</title>`));
-      const foundTitle = rules.title(document);
-      assert.equal(foundTitle, pageTitle);
-  });
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.title, pageTitle, testTag));
 });
 
 
 describe('Canonical URL Rule Tests', function() {
   const pageUrl = 'http://www.example.com/';
 
-  it('finds og:url', () => {
-      const document = jsdom.jsdom(buildHTML(`<meta property="og:url" content="${pageUrl}" />`));
-      const foundUrl = rules.url(document);
-      assert.equal(foundUrl, pageUrl);
-  });
+  const ruleTests = [
+    ['og:url', `<meta property="og:url" content="${pageUrl}" />`],
+    ['rel=canonical', `<link rel="canonical" href="${pageUrl}" />`],
+  ];
 
-  it('finds rel=canonical', function() {
-      const document = jsdom.jsdom(buildHTML(`<link rel="canonical" href="${pageUrl}" />`));
-      const foundUrl = rules.url(document);
-      assert.equal(foundUrl, pageUrl);
-  });
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.url, pageUrl, testTag));
 });
