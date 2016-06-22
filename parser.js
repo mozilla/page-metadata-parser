@@ -87,6 +87,6 @@ function getMetadata(document) {
 }
 
 module.exports = {
-  rules: metadataRules,
+  metadataRules: metadataRules,
   getMetadata: getMetadata
 };

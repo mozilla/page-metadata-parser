@@ -1,9 +1,8 @@
 // Tests for parse.js
-
 const assert = require('chai').assert;
 const jsdom = require('jsdom');
 
-const {rules, getMetadata} = require('../parser.js');
+const {metadataRules, getMetadata} = require('../parser.js');
 
 
 function buildHTML(tag) {
@@ -37,7 +36,7 @@ describe('Title Rule Tests', function() {
     ['title', `<title>${pageTitle}</title>`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.title, pageTitle, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.title, pageTitle, testTag));
 });
 
 
@@ -49,7 +48,7 @@ describe('Canonical URL Rule Tests', function() {
     ['rel=canonical', `<link rel="canonical" href="${pageUrl}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.url, pageUrl, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.url, pageUrl, testTag));
 });
 
 
@@ -66,7 +65,7 @@ describe('Icon Rule Tests', function() {
     ['mask-icon', `<link rel="mask-icon" href="${pageIcon}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.icon_url, pageIcon, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.icon_url, pageIcon, testTag));
 });
 
 
@@ -80,7 +79,7 @@ describe('Image Rule Tests', function() {
     ['img', `<img src="${pageImage}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.image_url, pageImage, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.image_url, pageImage, testTag));
 });
 
 
@@ -92,7 +91,7 @@ describe('Description Rule Tests', function() {
     ['description', `<meta name="description" content="${pageDescription}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.description, pageDescription, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.description, pageDescription, testTag));
 });
 
 
@@ -103,5 +102,5 @@ describe('Type Rule Tests', function() {
     ['og:type', `<meta property="og:type" content="${pageType}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, rules.type, pageType, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.type, pageType, testTag));
 });
