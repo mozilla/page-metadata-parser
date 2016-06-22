@@ -66,12 +66,12 @@ const typeRules = buildRuleset('type', [
 
 
 const metadataRules = {
-  type: typeRules,
-  url: canonicalUrlRules,
-  title: titleRules,
   description: descriptionRules,
   icon_url: iconRules,
   image_url: imageRules,
+  title: titleRules,
+  type: typeRules,
+  url: canonicalUrlRules,
 };
 
 
