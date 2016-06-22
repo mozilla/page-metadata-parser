@@ -2,7 +2,7 @@
 const assert = require('chai').assert;
 const jsdom = require('jsdom');
 
-const {metadataRules, getMetadata} = require('../parser.js');
+const {metadataRules} = require('../parser.js');
 
 
 function buildHTML(tag) {
