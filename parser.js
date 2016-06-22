@@ -56,8 +56,8 @@ const imageRules = buildRuleset('image', [
 ]);
 
 const descriptionRules = buildRuleset('description', [
-  ['meta[name="description"]', node => node.element.content],
   ['meta[property="og:description"]', node => node.element.content],
+  ['meta[name="description"]', node => node.element.content],
 ]);
 
 const typeRules = buildRuleset('type', [
