@@ -5,8 +5,9 @@
   "main": "parser.js",
   "scripts": {
     "test:lint": "./node_modules/eslint/bin/eslint.js ./parser.js",
-    "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha -- tests/* -R spec",
-    "test": "./node_modules/npm-run-all/bin/npm-run-all/index.js test:*"
+    "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha --report lcovonly -- tests/* -R spec",
+    "test": "./node_modules/npm-run-all/bin/npm-run-all/index.js test:*",
+    "cover": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "0.0.3",
     "istanbul": "^0.4.4",

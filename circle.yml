@@ -1,7 +1,14 @@
 machine:
+  environment:
+    COVERALLS_REPO_TOKEN: Vf8OYui1kwrD3HoOBefD4K0sbgpOVz7JO
+
   node:
     version: 6.2 
 
 dependencies:
   override:
-    - npm install --dev
+    - npm install --only=dev
+
+test:
+  post:
+    - npm run cover
