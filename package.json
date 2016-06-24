@@ -4,7 +4,7 @@
   "description": "A Javascript library for parsing metadata in a Web Page.",
   "main": "parser.js",
   "scripts": {
-    "test:lint": "./node_modules/eslint/bin/eslint.js ./parser.js",
+    "test:lint": "./node_modules/eslint/bin/eslint.js ./*.js ./tests/*.js",
     "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha --report lcovonly -- tests/* -R spec",
     "test": "./node_modules/npm-run-all/bin/npm-run-all/index.js test:*",
     "cover": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
