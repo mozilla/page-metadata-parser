@@ -1,9 +1,7 @@
 // Tests for parse.js
-const assert = require('chai').assert;
-const jsdom = require('jsdom');
-
+const {assert} = require('chai');
 const {getMetadata} = require('../parser.js');
-
+const {stringToDom} = require('./test-utils');
 
 describe('Get Metadata Tests', function() {
   const sampleDescription = 'A test page.';
@@ -15,20 +13,21 @@ describe('Get Metadata Tests', function() {
 
   const sampleHtml = `
     <html>
-      <head>
-        <meta property="og:description" content="${sampleDescription}" />
-        <link rel="icon" href="${sampleIcon}" />
-        <meta property="og:image" content="${sampleImage}" />
-        <meta property="og:title" content="${sampleTitle}" />
-        <meta property="og:type" content="${sampleType}" />
-        <meta property="og:url" content="${sampleUrl}" />
-      </head>
+    <head>
+      <meta property="og:description" content="${sampleDescription}" />
+      <link rel="icon" href="${sampleIcon}" />
+      <meta property="og:image" content="${sampleImage}" />
+      <meta property="og:title" content="${sampleTitle}" />
+      <meta property="og:type" content="${sampleType}" />
+      <meta property="og:url" content="${sampleUrl}" />
+    </head>
     </html>
   `;
 
   it('parses metadata', () => {
-    const document = jsdom.jsdom(sampleHtml);
-    const metadata = getMetadata(document);
+    const doc = stringToDom(sampleHtml);
+    const metadata = getMetadata(doc);
+
     assert.equal(metadata.description, sampleDescription, `Unable to find ${sampleDescription} in ${sampleHtml}`);
     assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${sampleHtml}`);
     assert.equal(metadata.image_url, sampleImage, `Unable to find ${sampleImage} in ${sampleHtml}`);

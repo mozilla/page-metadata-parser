@@ -8,6 +8,8 @@ machine:
 dependencies:
   override:
     - npm install --only=dev
+    - npm update
+    - sudo apt-get update && sudo apt-get install libpango1.0-0 && sudo apt-get install libpangocairo-1.0-0 && sudo apt-get install firefox
 
 test:
   post:
