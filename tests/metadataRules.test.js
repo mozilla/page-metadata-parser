@@ -1,9 +1,7 @@
 // Tests for parse.js
-const assert = require('chai').assert;
-const jsdom = require('jsdom');
-
+const {assert} = require('chai');
 const {metadataRules} = require('../parser.js');
-
+const {stringToDom} = require('./test-utils');
 
 function buildHTML(tag) {
   return `
@@ -15,12 +13,11 @@ function buildHTML(tag) {
   `;
 }
 
-
 function ruleTest(testName, testRule, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
-    const document = jsdom.jsdom(html);
-    const found = testRule(document);
+    const doc = stringToDom(html);
+    const found = testRule(doc);
     assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
   });
 }

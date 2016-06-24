@@ -4,10 +4,11 @@
   "description": "A Javascript library for parsing metadata in a Web Page.",
   "main": "parser.js",
   "scripts": {
-    "test:lint": "./node_modules/eslint/bin/eslint.js ./*.js ./tests/*.js",
-    "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha --report lcovonly -- tests/* -R spec",
-    "test": "./node_modules/npm-run-all/bin/npm-run-all/index.js test:*",
-    "cover": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "test:lint": "eslint ./*.js ./tests/*.js",
+    "test:karma": "karma start",
+    "test": "npm-run-all test:*",
+    "tdd": "npm run test:karma -- --no-single-run",
+    "cover": "cat ./coverage/lcov/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/mozilla/page-metadata-parser#readme",
   "dependencies": {
     "fathom-web": "^1.0.0",
+    "karma-chrome-launcher": "^1.0.1",
     "wu": "^2.1.0"
   },
   "devDependencies": {
@@ -34,8 +36,17 @@
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "0.0.3",
     "istanbul": "^0.4.4",
+    "istanbul-instrumenter-loader": "^0.2.0",
     "jsdom": "^9.2.1",
+    "karma": "^1.0.0",
+    "karma-coverage": "^1.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-mocha": "^1.0.1",
+    "karma-mocha-reporter": "^2.0.4",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.7.0",
     "mocha": "^2.5.3",
-    "npm-run-all": "^2.2.0"
+    "npm-run-all": "^2.2.0",
+    "webpack": "^1.13.1"
   }
 }
