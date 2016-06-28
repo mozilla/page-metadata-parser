@@ -3,13 +3,13 @@ machine:
     COVERALLS_REPO_TOKEN: Vf8OYui1kwrD3HoOBefD4K0sbgpOVz7JO
 
   node:
-    version: 6.2 
+    version: 6.2
 
 dependencies:
   override:
     - npm install --only=dev
     - npm update
-    - sudo apt-get update && sudo apt-get install libpango1.0-0 && sudo apt-get install libpangocairo-1.0-0 && sudo apt-get install firefox
+    - sudo apt-get update && sudo apt-get install libpango1.0-0 libpangocairo-1.0-0 firefox
 
 test:
   post:

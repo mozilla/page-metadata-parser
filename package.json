@@ -1,45 +1,25 @@
 {
   "name": "page-metadata-parser",
+  "description": "A JavaScript library for parsing metadata in a Web Page.",
   "version": "0.2.0",
-  "description": "A Javascript library for parsing metadata in a Web Page.",
-  "main": "parser.js",
-  "scripts": {
-    "test:lint": "eslint ./*.js ./tests/*.js",
-    "test:karma": "karma start",
-    "test:mocha": "./node_modules/istanbul/lib/cli.js cover _mocha --report lcovonly -- tests/*.test.js -R spec",
-    "test": "npm-run-all test:*",
-    "tdd": "npm run test:karma -- --no-single-run",
-    "cover": "cat ./coverage/lcov/lcov.info | coveralls"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mozilla/page-metadata-parser.git"
-  },
-  "keywords": [
-    "page",
-    "metadata",
-    "parser"
-  ],
   "author": "Jared Kerim",
-  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/mozilla/page-metadata-parser/issues"
   },
-  "homepage": "https://github.com/mozilla/page-metadata-parser#readme",
   "dependencies": {
     "fathom-web": "^1.1.0",
-    "karma-chrome-launcher": "^1.0.1",
     "wu": "^2.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
     "eslint": "^2.13.1",
-    "eslint-plugin-mozilla": "0.0.3",
+    "eslint-plugin-mozilla": "^0.0.3",
     "istanbul": "^0.4.4",
     "istanbul-instrumenter-loader": "^0.2.0",
     "jsdom": "^9.2.1",
     "karma": "^1.0.0",
+    "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^1.0.0",
     "karma-firefox-launcher": "^1.0.0",
     "karma-mocha": "^1.0.1",
@@ -49,5 +29,25 @@
     "mocha": "^2.5.3",
     "npm-run-all": "^2.2.0",
     "webpack": "^1.13.1"
+  },
+  "homepage": "https://github.com/mozilla/page-metadata-parser#readme",
+  "keywords": [
+    "page",
+    "metadata",
+    "parser"
+  ],
+  "license": "MPL-2.0",
+  "main": "parser.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/page-metadata-parser.git"
+  },
+  "scripts": {
+    "cover": "cat ./coverage/lcov/lcov.info | coveralls",
+    "tdd": "npm run test:karma -- --no-single-run",
+    "test": "npm-run-all test:*",
+    "test:karma": "karma start",
+    "test:lint": "eslint .",
+    "test:mocha": "istanbul cover _mocha --report lcovonly -- tests/*.test.js -R spec"
   }
 }

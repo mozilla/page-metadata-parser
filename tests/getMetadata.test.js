@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {getMetadata} = require('../parser.js');
+const {getMetadata} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 describe('Get Metadata Tests', function() {
