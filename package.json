@@ -1,6 +1,6 @@
 {
   "name": "page-metadata-parser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Javascript library for parsing metadata in a Web Page.",
   "main": "parser.js",
   "scripts": {
