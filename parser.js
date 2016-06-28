@@ -12,8 +12,8 @@ function buildRuleset(name, rules) {
     }]
   )));
 
-  return document => {
-    const kb = builtRuleset.score(document);
+  return doc => {
+    const kb = builtRuleset.score(doc);
     const maxNode = kb.max(name);
     if (maxNode) {
       const value = maxNode.flavors.get(name);
@@ -75,12 +75,12 @@ const metadataRules = {
 };
 
 
-function getMetadata(document) {
+function getMetadata(doc) {
   let metadata = {};
 
   Object.keys(metadataRules).map(metadataKey => {
     const metadataRule = metadataRules[metadataKey];
-    metadata[metadataKey] = metadataRule(document);
+    metadata[metadataKey] = metadataRule(doc);
   });
 
   return metadata;
