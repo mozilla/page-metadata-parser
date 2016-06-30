@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {metadataRules} = require('../parser.js');
+const {metadataRules} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 function buildHTML(tag) {

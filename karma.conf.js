@@ -25,7 +25,7 @@ module.exports = function(config) {
         postLoaders: [{
           test: /\.js$/,
           loader: 'istanbul-instrumenter',
-          include: [path.join(__dirname, '/parser.js')]
+          include: [path.join(__dirname, 'parser.js')]
         }]
       },
       externals: {

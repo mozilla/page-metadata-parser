@@ -76,7 +76,7 @@ const metadataRules = {
 
 
 function getMetadata(doc) {
-  let metadata = {};
+  const metadata = {};
 
   Object.keys(metadataRules).map(metadataKey => {
     const metadataRule = metadataRules[metadataKey];
@@ -87,6 +87,6 @@ function getMetadata(doc) {
 }
 
 module.exports = {
-  metadataRules: metadataRules,
-  getMetadata: getMetadata
+  metadataRules,
+  getMetadata
 };
