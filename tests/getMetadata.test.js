@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {getMetadata} = require('../parser');
+const {getMetadata, metadataRules} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 describe('Get Metadata Tests', function() {
@@ -34,6 +34,47 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.title, sampleTitle, `Unable to find ${sampleTitle} in ${sampleHtml}`);
     assert.equal(metadata.type, sampleType, `Unable to find ${sampleType} in ${sampleHtml}`);
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
+  });
+
+  it('allows custom rules', () => {
+    const doc = stringToDom(sampleHtml);
+    const rules = {
+      title: metadataRules.title,
+      description: metadataRules.description
+    };
+
+    const metadata = getMetadata(doc, rules);
+    assert.equal(metadata.title, sampleTitle, 'Error finding title');
+    assert.equal(metadata.description, sampleDescription, 'Error finding description');
+    assert.equal(Object.keys(metadata).length, 2);
+  });
+
+  it('allows to create groups of rules', () => {
+    const doc = stringToDom(sampleHtml);
+    const rules = {
+      openGraph: {
+        title: metadataRules.title,
+        description: metadataRules.description,
+        type: metadataRules.type,
+        url: metadataRules.url
+      },
+      media: {
+        icon: metadataRules.icon_url,
+        image: metadataRules.image_url
+      }
+    };
+
+    const metadata = getMetadata(doc, rules);
+    assert.isObject(metadata.openGraph);
+    assert.isObject(metadata.media);
+
+    assert.equal(metadata.openGraph.title, sampleTitle, 'Error finding title');
+    assert.equal(metadata.openGraph.description, sampleDescription, 'Error finding description');
+    assert.equal(metadata.openGraph.type, sampleType, 'Error finding type');
+    assert.equal(metadata.openGraph.url, sampleUrl, 'Error finding url');
+
+    assert.equal(metadata.media.icon, sampleIcon, 'Error finding icon');
+    assert.equal(metadata.media.image, sampleImage, 'Error finding image');
   });
 
 });
