@@ -71,16 +71,19 @@ const metadataRules = {
   image_url: imageRules,
   title: titleRules,
   type: typeRules,
-  url: canonicalUrlRules,
+  url: canonicalUrlRules
 };
 
 
-function getMetadata(doc) {
+function getMetadata(doc, rules) {
   const metadata = {};
+  const ruleSet = rules || metadataRules;
 
-  Object.keys(metadataRules).map(metadataKey => {
-    const metadataRule = metadataRules[metadataKey];
-    metadata[metadataKey] = metadataRule(doc);
+  Object.keys(ruleSet).map(metadataKey => {
+    const metadataRule = ruleSet[metadataKey];
+    metadata[metadataKey] = typeof metadataRule === 'function' ?
+      metadataRule(doc) :
+      getMetadata(doc, metadataRule);
   });
 
   return metadata;
