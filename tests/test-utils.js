@@ -6,10 +6,10 @@ if (global.DOMParser !== undefined) {
     }
   };
 } else {
-  const jsdom = require('jsdom');
+  const domino = require('domino');
   module.exports = {
     stringToDom(str) {
-      return jsdom.jsdom(str);
+      return domino.createWindow(str).document;
     }
   };
 }

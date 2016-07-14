@@ -7,16 +7,16 @@
     "url": "https://github.com/mozilla/page-metadata-parser/issues"
   },
   "dependencies": {
-    "fathom-web": "^1.1.0"
+    "fathom-web": "^1.1.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
+    "domino": "^1.0.25",
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "^0.0.3",
     "istanbul": "^0.4.4",
     "istanbul-instrumenter-loader": "^0.2.0",
-    "jsdom": "^9.2.1",
     "karma": "^1.0.0",
     "karma-coverage": "^1.0.0",
     "karma-firefox-launcher": "^1.0.0",
