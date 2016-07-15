@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {metadataRules} = require('../parser');
+const {metadataRules, buildRuleset} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 function buildHTML(tag) {
@@ -13,11 +13,11 @@ function buildHTML(tag) {
   `;
 }
 
-function ruleTest(testName, testRule, expected, testTag) {
+function ruleTest(testName, testRuleName, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
-    const found = testRule(doc);
+    const found = buildRuleset(testRuleName, metadataRules[testRuleName])(doc);
     assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
   });
 }
@@ -33,7 +33,7 @@ describe('Title Rule Tests', function() {
     ['title', `<title>${pageTitle}</title>`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.title, pageTitle, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'title', pageTitle, testTag));
 });
 
 
@@ -45,7 +45,7 @@ describe('Canonical URL Rule Tests', function() {
     ['rel=canonical', `<link rel="canonical" href="${pageUrl}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.url, pageUrl, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'url', pageUrl, testTag));
 });
 
 
@@ -62,7 +62,7 @@ describe('Icon Rule Tests', function() {
     ['mask-icon', `<link rel="mask-icon" href="${pageIcon}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.icon_url, pageIcon, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'icon_url', pageIcon, testTag));
 });
 
 
@@ -76,7 +76,7 @@ describe('Image Rule Tests', function() {
     ['img', `<img src="${pageImage}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.image_url, pageImage, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'image_url', pageImage, testTag));
 });
 
 
@@ -88,7 +88,7 @@ describe('Description Rule Tests', function() {
     ['description', `<meta name="description" content="${pageDescription}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.description, pageDescription, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'description', pageDescription, testTag));
 });
 
 
@@ -99,5 +99,5 @@ describe('Type Rule Tests', function() {
     ['og:type', `<meta property="og:type" content="${pageType}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.type, pageType, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, 'type', pageType, testTag));
 });
