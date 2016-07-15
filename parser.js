@@ -33,7 +33,11 @@ function getMetadata(doc, rules) {
 
 class MetadataParser {
   constructor(customRules = {}, options = {}) {
-    this._rules = options.replace ? customRules : Object.assign({}, MetadataParser.metadataRules, customRules);
+    if (options.replace) {
+      this._rules = customRules;
+    } else {
+      this._rules = Object.assign({}, MetadataParser.metadataRules, customRules);
+    }
   }
   get rules() {
     return this._rules;
