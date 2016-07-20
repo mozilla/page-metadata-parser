@@ -103,3 +103,14 @@ describe('Type Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.type, pageType, testTag));
 });
+
+
+describe('Keywords Rule Tests', function() {
+  const keywords = 'Cats, Kitties, Meow';
+
+  const ruleTests = [
+    ['keywords', `<meta name="keywords" content="${keywords}" />`],
+  ];
+
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.keywords, keywords, testTag));
+});
