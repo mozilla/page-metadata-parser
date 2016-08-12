@@ -27,7 +27,7 @@ function buildRuleset(name, rules) {
 
 const titleRules = buildRuleset('title', [
   ['meta[property="og:title"]', node => node.element.content],
-  ['meta[property="twitter:title"]', node => node.element.content],
+  ['meta[name="twitter:title"]', node => node.element.content],
   ['meta[name="hdl"]', node => node.element.content],
   ['title', node => node.element.text],
 ]);
@@ -50,7 +50,7 @@ const iconRules = buildRuleset('icon', [
 
 const imageRules = buildRuleset('image', [
   ['meta[property="og:image"]', node => node.element.content],
-  ['meta[property="twitter:image"]', node => node.element.content],
+  ['meta[name="twitter:image"]', node => node.element.content],
   ['meta[name="thumbnail"]', node => node.element.content],
   ['img', node => node.element.src],
 ]);
