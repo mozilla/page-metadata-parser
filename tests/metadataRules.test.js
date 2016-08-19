@@ -71,6 +71,8 @@ describe('Image Rule Tests', function() {
 
   const ruleTests = [
     ['og:image', `<meta property="og:image" content="${pageImage}" />`],
+    ['og:image:url', `<meta property="og:image:url" content="${pageImage}" /> `],
+    ['og:image:secure_url', `<meta property="og:image:secure_url" content="${pageImage}" /> `],
     ['twitter:image', `<meta property="twitter:image" content="${pageImage}" />`],
     ['thumbnail', `<meta name="thumbnail" content="${pageImage}" />`],
     ['img', `<img src="${pageImage}" />`],

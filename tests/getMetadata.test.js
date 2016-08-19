@@ -6,7 +6,8 @@ const {stringToDom} = require('./test-utils');
 describe('Get Metadata Tests', function() {
   const sampleDescription = 'A test page.';
   const sampleIcon = 'http://www.example.com/favicon.ico';
-  const sampleImage = 'http://www.example.com/image.png';
+  const sampleImageHTTP = 'http://www.example.com/image.png';
+  const sampleImageHTTPS = 'https://www.example.com/secure_image.png';
   const sampleTitle = 'Page Title';
   const sampleType = 'article';
   const sampleUrl = 'http://www.example.com/';
@@ -16,7 +17,9 @@ describe('Get Metadata Tests', function() {
     <head>
       <meta property="og:description" content="${sampleDescription}" />
       <link rel="icon" href="${sampleIcon}" />
-      <meta property="og:image" content="${sampleImage}" />
+      <meta property="og:image" content="${sampleImageHTTP}" />
+      <meta property="og:image:url" content="${sampleImageHTTP}" />
+      <meta property="og:image:secure_url" content="${sampleImageHTTPS}" />
       <meta property="og:title" content="${sampleTitle}" />
       <meta property="og:type" content="${sampleType}" />
       <meta property="og:url" content="${sampleUrl}" />
@@ -30,7 +33,7 @@ describe('Get Metadata Tests', function() {
 
     assert.equal(metadata.description, sampleDescription, `Unable to find ${sampleDescription} in ${sampleHtml}`);
     assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${sampleHtml}`);
-    assert.equal(metadata.image_url, sampleImage, `Unable to find ${sampleImage} in ${sampleHtml}`);
+    assert.equal(metadata.image_url, sampleImageHTTPS, `Unable to find ${sampleImageHTTPS} in ${sampleHtml}`);
     assert.equal(metadata.title, sampleTitle, `Unable to find ${sampleTitle} in ${sampleHtml}`);
     assert.equal(metadata.type, sampleType, `Unable to find ${sampleType} in ${sampleHtml}`);
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
@@ -74,7 +77,7 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.openGraph.url, sampleUrl, 'Error finding url');
 
     assert.equal(metadata.media.icon, sampleIcon, 'Error finding icon');
-    assert.equal(metadata.media.image, sampleImage, 'Error finding image');
+    assert.equal(metadata.media.image, sampleImageHTTPS, 'Error finding image');
   });
 
 });

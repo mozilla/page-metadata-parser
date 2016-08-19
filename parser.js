@@ -49,6 +49,8 @@ const iconRules = buildRuleset('icon', [
 ]);
 
 const imageRules = buildRuleset('image', [
+  ['meta[property="og:image:secure_url"]', node => node.element.content],
+  ['meta[property="og:image:url"]', node => node.element.content],
   ['meta[property="og:image"]', node => node.element.content],
   ['meta[property="twitter:image"]', node => node.element.content],
   ['meta[name="thumbnail"]', node => node.element.content],
