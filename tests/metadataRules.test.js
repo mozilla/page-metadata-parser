@@ -75,7 +75,6 @@ describe('Image Rule Tests', function() {
     ['og:image:secure_url', `<meta property="og:image:secure_url" content="${pageImage}" /> `],
     ['twitter:image', `<meta property="twitter:image" content="${pageImage}" />`],
     ['thumbnail', `<meta name="thumbnail" content="${pageImage}" />`],
-    ['img', `<img src="${pageImage}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.image_url, pageImage, testTag));

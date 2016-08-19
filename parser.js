@@ -57,7 +57,6 @@ const imageRules = buildRuleset('image', [
   ['meta[property="og:image"]', node => node.element.content],
   ['meta[property="twitter:image"]', node => node.element.content],
   ['meta[name="thumbnail"]', node => node.element.content],
-  ['img', node => node.element.src],
 ]);
 
 const descriptionRules = buildRuleset('description', [
