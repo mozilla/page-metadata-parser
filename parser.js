@@ -37,6 +37,9 @@ const canonicalUrlRules = buildRuleset('url', [
   ['link[rel="canonical"]', node => node.element.href],
 ]);
 
+const keywordsRules = buildRuleset('keywords', [
+  ['meta[name="keywords"]', node => node.element.content],
+]);
 
 const iconRules = buildRuleset('icon', [
   ['link[rel="apple-touch-icon"]', node => node.element.href],
@@ -71,6 +74,7 @@ const metadataRules = {
   description: descriptionRules,
   icon_url: iconRules,
   image_url: imageRules,
+  keywords: keywordsRules,
   title: titleRules,
   type: typeRules,
   url: canonicalUrlRules
