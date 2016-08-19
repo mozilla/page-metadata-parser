@@ -1,7 +1,7 @@
 {
   "name": "page-metadata-parser",
   "description": "A JavaScript library for parsing metadata in a Web Page.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Jared Kerim",
   "bugs": {
     "url": "https://github.com/mozilla/page-metadata-parser/issues"
