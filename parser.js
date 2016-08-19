@@ -34,6 +34,7 @@ const titleRules = buildRuleset('title', [
 
 const canonicalUrlRules = buildRuleset('url', [
   ['meta[property="og:url"]', node => node.element.content],
+  ['meta[name="twitter:url"]', node => node.element.content],
   ['link[rel="canonical"]', node => node.element.href],
 ]);
 
@@ -57,6 +58,14 @@ const imageRules = buildRuleset('image', [
   ['img', node => node.element.src],
 ]);
 
+const imageWidthRules = buildRuleset('image_width', [
+  ['meta[property="og:image:width"]', node => node.element.content],
+]);
+
+const imageHeightRules = buildRuleset('image_height', [
+  ['meta[property="og:image:height"]', node => node.element.content],
+]);
+
 const descriptionRules = buildRuleset('description', [
   ['meta[property="og:description"]', node => node.element.content],
   ['meta[name="description"]', node => node.element.content],
@@ -70,16 +79,17 @@ const typeRules = buildRuleset('type', [
 const metadataRules = {
   description: descriptionRules,
   icon_url: iconRules,
+  image_height: imageHeightRules,
   image_url: imageRules,
+  image_width: imageWidthRules,
   title: titleRules,
   type: typeRules,
-  url: canonicalUrlRules
+  url: canonicalUrlRules,
 };
 
 
-function getMetadata(doc, rules) {
+function getMetadata(doc, ruleSet = metadataRules) {
   const metadata = {};
-  const ruleSet = rules || metadataRules;
 
   Object.keys(ruleSet).map(metadataKey => {
     const metadataRule = ruleSet[metadataKey];
