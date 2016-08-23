@@ -18,7 +18,7 @@ function ruleTest(testName, testRule, expected, testTag) {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
     const found = testRule(doc);
-    assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
+    assert.deepEqual(found, expected, `Unable to find ${testName} in ${html}`);
   });
 }
 
@@ -105,10 +105,10 @@ describe('Type Rule Tests', function() {
 
 
 describe('Keywords Rule Tests', function() {
-  const keywords = 'Cats, Kitties, Meow';
+  const keywords = ['Cats', 'Kitties', 'Meow'];
 
   const ruleTests = [
-    ['keywords', `<meta name="keywords" content="${keywords}" />`],
+    ['keywords', `<meta name="keywords" content="${keywords.join(', ')}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.keywords, keywords, testTag));
