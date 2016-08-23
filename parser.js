@@ -18,10 +18,18 @@ function buildRuleset(name, rules) {
     if (maxNode) {
       const value = maxNode.flavors.get(name);
       if (value) {
-        return value.trim();
+        if (value instanceof String) {
+          return value.trim();
+        }
+        return value;
       }
     }
   };
+}
+
+function keywordsToArray(str) {
+  const keywords = str.toString().split(',');
+  return keywords.map(keyword => keyword.trim());
 }
 
 
@@ -38,7 +46,7 @@ const canonicalUrlRules = buildRuleset('url', [
 ]);
 
 const keywordsRules = buildRuleset('keywords', [
-  ['meta[name="keywords"]', node => node.element.content],
+  ['meta[name="keywords"]', node => keywordsToArray(node.element.content)],
 ]);
 
 const iconRules = buildRuleset('icon', [
