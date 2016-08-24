@@ -36,13 +36,24 @@ This library is based on the work of [Mozilla Fathom](https://github.com/mozilla
 
 A single rule instructs the parser on a possible DOM node to locate a specific piece of content.  For instance, a rule to parse the title of a page might look like
 
-     ['meta[property="og:title"]', node => node.element.content]
+    ['meta[property="og:title"]', node => node.element.getAttribute('content')]
 
 A rule consists of two parts, a [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) compatible string which is used to look up the target content, and a callable which receives a Node (a wrapper around a DOM element) and returns the desired content from that Node.
 
 This rule would be able to successfully find a page's title from the following HTML sample:
 
     <meta property="og:title" content="A Sample Page" />
+
+Many rules together form a Rule Set.  This library will apply each rule to a page and choose the 'best' result.  In our case, the order in which rules are defined indicate their preference, with the first rule being the most preferred.  A Rule Set can be defined like so:
+
+    const titleRules = {
+      rules: [
+        ['meta[property="og:title"]', node => node.element.getAttribute('content')],
+        ['title', node => node.element.text],
+      ]
+    };
+
+In this case, the OpenGraph title will be preferred over the title tag.
 
 This library includes many rules for a single desired piece of metadata which should allow it to consistently find metadata across many types of pages.  This library is meant to be a community driven effort, and so if there is no rule to find a piece of information from a particular website, contributors are encouraged to add new rules!
 
