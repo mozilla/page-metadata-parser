@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {metadataRules} = require('../parser');
+const {buildRuleset, metadataRules} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 function buildHTML(tag) {
@@ -17,7 +17,8 @@ function ruleTest(testName, testRule, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
-    const found = testRule(doc);
+    const rule = buildRuleset(testName, testRule);
+    const found = rule(doc);
     assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
   });
 }
