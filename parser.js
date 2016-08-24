@@ -1,6 +1,17 @@
+const urlparse = require('url');
 const {dom, rule, ruleset} = require('fathom-web');
 
-function buildRuleset(name, rules) {
+function makeUrlAbsolute(base, relative) {
+  const relativeParsed = urlparse.parse(relative);
+
+  if (relativeParsed.host === null) {
+    return urlparse.resolve(base, relative);
+  }
+
+  return relative;
+}
+
+function buildRuleset(name, rules, processors) {
   const reversedRules = Array.from(rules).reverse();
   const builtRuleset = ruleset(...reversedRules.map(([query, handler], order) => rule(
     dom(query),
@@ -11,11 +22,19 @@ function buildRuleset(name, rules) {
     }]
   )));
 
-  return doc => {
+  return (doc, context) => {
     const kb = builtRuleset.score(doc);
     const maxNode = kb.max(name);
+
     if (maxNode) {
-      const value = maxNode.flavors.get(name);
+      let value = maxNode.flavors.get(name);
+
+      if (processors) {
+        processors.forEach(processor => {
+          value = processor(value, context);
+        });
+      }
+
       if (value) {
         return value.trim();
       }
@@ -41,6 +60,9 @@ const metadataRules = {
       ['link[rel="Shortcut Icon"]', node => node.element.getAttribute('href')],
       ['link[rel="mask-icon"]', node => node.element.getAttribute('href')],
     ],
+    processors: [
+      (icon_url, context) => makeUrlAbsolute(context.url, icon_url)
+    ]
   },
 
   image_url: {
@@ -50,6 +72,9 @@ const metadataRules = {
       ['meta[property="og:image"]', node => node.element.getAttribute('content')],
       ['meta[property="twitter:image"]', node => node.element.getAttribute('content')],
       ['meta[name="thumbnail"]', node => node.element.getAttribute('content')],
+    ],
+    processors: [
+      (image_url, context) => makeUrlAbsolute(context.url, image_url)
     ],
   },
 
@@ -82,15 +107,21 @@ const metadataRules = {
   },
 };
 
-function getMetadata(doc, rules) {
+function getMetadata(doc, rules, url) {
   const metadata = {};
   const ruleSet = rules || metadataRules;
+
+  const context = {};
+
+  if (url) {
+    context.url = url;
+  }
 
   Object.keys(ruleSet).map(metadataKey => {
     const metadataRule = ruleSet[metadataKey];
 
     if(Array.isArray(metadataRule.rules)) {
-      metadata[metadataKey] = buildRuleset(metadataKey, metadataRule.rules)(doc);
+      metadata[metadataKey] = buildRuleset(metadataKey, metadataRule.rules, metadataRule.processors)(doc, context);
     } else {
       metadata[metadataKey] = getMetadata(doc, metadataRule);
     }

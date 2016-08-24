@@ -17,8 +17,10 @@ function ruleTest(testName, testRule, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
-    const rule = buildRuleset(testName, testRule.rules);
-    const found = rule(doc);
+    const rule = buildRuleset(testName, testRule.rules, testRule.processors);
+    const found = rule(doc, {
+      url: 'http://www.example.com/'
+    });
     assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
   });
 }
@@ -52,6 +54,7 @@ describe('Canonical URL Rule Tests', function() {
 
 describe('Icon Rule Tests', function() {
   const pageIcon = 'http://www.example.com/favicon.ico';
+  const relativeIcon = '/favicon.ico';
 
   const ruleTests = [
     ['apple-touch-icon', `<link rel="apple-touch-icon" href="${pageIcon}" />`],
@@ -61,6 +64,7 @@ describe('Icon Rule Tests', function() {
     ['shortcut icon', `<link rel="shortcut icon" href="${pageIcon}" />`],
     ['Shortcut Icon', `<link rel="Shortcut Icon" href="${pageIcon}" />`],
     ['mask-icon', `<link rel="mask-icon" href="${pageIcon}" />`],
+    ['relative icon', `<link rel="icon" href="${relativeIcon}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.icon_url, pageIcon, testTag));
@@ -69,6 +73,7 @@ describe('Icon Rule Tests', function() {
 
 describe('Image Rule Tests', function() {
   const pageImage = 'http://www.example.com/image.png';
+  const relativeImage = '/image.png';
 
   const ruleTests = [
     ['og:image', `<meta property="og:image" content="${pageImage}" />`],
@@ -76,6 +81,7 @@ describe('Image Rule Tests', function() {
     ['og:image:secure_url', `<meta property="og:image:secure_url" content="${pageImage}" /> `],
     ['twitter:image', `<meta property="twitter:image" content="${pageImage}" />`],
     ['thumbnail', `<meta name="thumbnail" content="${pageImage}" />`],
+    ['relative image', `<meta name="thumbnail" content="${relativeImage}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.image_url, pageImage, testTag));
