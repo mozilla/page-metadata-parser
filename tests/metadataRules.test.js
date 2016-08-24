@@ -17,7 +17,7 @@ function ruleTest(testName, testRule, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
-    const rule = buildRuleset(testName, testRule);
+    const rule = buildRuleset(testName, testRule.rules);
     const found = rule(doc);
     assert.equal(found, expected, `Unable to find ${testName} in ${html}`);
   });
