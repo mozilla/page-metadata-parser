@@ -39,6 +39,27 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
   });
 
+  it('uses absolute URLs when url parameter passed in through context', () => {
+    const relativeHtml = `
+      <html>
+      <head>
+        <meta property="og:description" content="${sampleDescription}" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/image.png" />
+        <meta property="og:title" content="${sampleTitle}" />
+        <meta property="og:type" content="${sampleType}" />
+        <meta property="og:url" content="${sampleUrl}" />
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(relativeHtml);
+    const metadata = getMetadata(doc, metadataRules, {url: 'http://www.example.com/'});
+
+    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${sampleHtml}`);
+    assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${sampleHtml}`);
+  });
+
   it('allows custom rules', () => {
     const doc = stringToDom(sampleHtml);
     const rules = {

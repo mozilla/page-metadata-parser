@@ -107,15 +107,11 @@ const metadataRules = {
   },
 };
 
-function getMetadata(doc, rules, url) {
+function getMetadata(doc, rules, context) {
   const metadata = {};
   const ruleSet = rules || metadataRules;
 
-  const context = {};
-
-  if (url) {
-    context.url = url;
-  }
+  context = context || {};
 
   Object.keys(ruleSet).map(metadataKey => {
     const metadataRule = ruleSet[metadataKey];
