@@ -39,6 +39,27 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
   });
 
+  it('uses absolute URLs when url parameter passed in', () => {
+    const relativeHtml = `
+      <html>
+      <head>
+        <meta property="og:description" content="${sampleDescription}" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:image" content="/image.png" />
+        <meta property="og:title" content="${sampleTitle}" />
+        <meta property="og:type" content="${sampleType}" />
+        <meta property="og:url" content="${sampleUrl}" />
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(relativeHtml);
+    const metadata = getMetadata(doc, sampleUrl);
+
+    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
+    assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
+  });
+
   it('allows custom rules', () => {
     const doc = stringToDom(sampleHtml);
     const rules = {
@@ -46,7 +67,7 @@ describe('Get Metadata Tests', function() {
       description: metadataRules.description
     };
 
-    const metadata = getMetadata(doc, rules);
+    const metadata = getMetadata(doc, sampleUrl, rules);
     assert.equal(metadata.title, sampleTitle, 'Error finding title');
     assert.equal(metadata.description, sampleDescription, 'Error finding description');
     assert.equal(Object.keys(metadata).length, 2);
@@ -67,7 +88,7 @@ describe('Get Metadata Tests', function() {
       }
     };
 
-    const metadata = getMetadata(doc, rules);
+    const metadata = getMetadata(doc, sampleUrl, rules);
     assert.isObject(metadata.openGraph);
     assert.isObject(metadata.media);
 
