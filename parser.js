@@ -36,7 +36,10 @@ function buildRuleset(name, rules, processors) {
       }
 
       if (value) {
-        return value.trim();
+        if (value.trim) {
+          return value.trim();
+        }
+        return value;
       }
     }
   };
@@ -82,6 +85,9 @@ const metadataRules = {
     rules: [
       ['meta[name="keywords"]', node => node.element.getAttribute('content')],
     ],
+    processors: [
+      (keywords) => keywords.split(',').map((keyword) => keyword.trim()),
+    ]
   },
 
   title: {
