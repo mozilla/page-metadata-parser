@@ -60,6 +60,20 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
   });
 
+  it('falls back on provided url when no canonical url found', () => {
+    const html = `
+      <html>
+      <head>
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(html);
+    const metadata = getMetadata(doc, sampleUrl);
+
+    assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${JSON.stringify(metadata)}`);
+  });
+
   it('allows custom rules', () => {
     const doc = stringToDom(sampleHtml);
     const rules = {
@@ -68,9 +82,11 @@ describe('Get Metadata Tests', function() {
     };
 
     const metadata = getMetadata(doc, sampleUrl, rules);
+
+    assert.equal(metadata.url, sampleUrl, 'Error finding URL');
     assert.equal(metadata.title, sampleTitle, 'Error finding title');
     assert.equal(metadata.description, sampleDescription, 'Error finding description');
-    assert.equal(Object.keys(metadata).length, 2);
+    assert.equal(Object.keys(metadata).length, 3);
   });
 
   it('allows to create groups of rules', () => {
