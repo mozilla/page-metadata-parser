@@ -140,6 +140,7 @@ function getMetadata(doc, url, rules) {
 }
 
 module.exports = {
+  makeUrlAbsolute,
   buildRuleset,
   metadataRules,
   getMetadata
