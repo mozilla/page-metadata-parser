@@ -110,6 +110,9 @@ const metadataRules = {
       ['meta[property="og:url"]', node => node.element.getAttribute('content')],
       ['link[rel="canonical"]', node => node.element.getAttribute('href')],
     ],
+    processors: [
+      (url, context) => makeUrlAbsolute(context.url, url)
+    ]
   },
 };
 
@@ -128,6 +131,10 @@ function getMetadata(doc, url, rules) {
       metadata[metadataKey] = getMetadata(doc, url, metadataRule);
     }
   });
+
+  if(!metadata.url) {
+    metadata.url = url;
+  }
 
   return metadata;
 }

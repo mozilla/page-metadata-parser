@@ -41,11 +41,13 @@ describe('Title Rule Tests', function() {
 
 
 describe('Canonical URL Rule Tests', function() {
-  const pageUrl = 'http://www.example.com/';
+  const pageUrl = 'http://www.example.com/page.html';
+  const relativeUrl = '/page.html';
 
   const ruleTests = [
     ['og:url', `<meta property="og:url" content="${pageUrl}" />`],
     ['rel=canonical', `<link rel="canonical" href="${pageUrl}" />`],
+    ['relative canonical', `<link rel="canonical" href="${relativeUrl}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.url, pageUrl, testTag));
