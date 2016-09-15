@@ -10,6 +10,10 @@
     "fathom-web": "^1.1.2"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-loader": "^6.2.5",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-es2015": "^6.14.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
     "domino": "^1.0.25",
@@ -26,7 +30,7 @@
     "karma-webpack": "^1.7.0",
     "mocha": "^2.5.3",
     "npm-run-all": "^2.2.0",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.2"
   },
   "homepage": "https://github.com/mozilla/page-metadata-parser#readme",
   "keywords": [
@@ -46,6 +50,7 @@
     "test": "npm-run-all test:*",
     "test:karma": "karma start",
     "test:lint": "eslint .",
-    "test:mocha": "istanbul cover _mocha --report lcovonly -- tests/*.test.js -R spec"
+    "test:mocha": "istanbul cover _mocha --report lcovonly -- tests/*.test.js -R spec",
+    "clientize": "webpack"
   }
 }
