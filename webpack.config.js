@@ -1,10 +1,10 @@
 module.exports = {
     entry: ['babel-polyfill', './parser.js'],
     output: {
-        path: './bin',
+        path: './client',
         filename: 'page-metadata-parser.bundle.js',
-        libraryTarget: "var",
-        library: "metadataparser"
+        libraryTarget: 'var',
+        library: 'metadataparser'
     },
     module: {
         loaders: [{
