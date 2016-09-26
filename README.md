@@ -1,5 +1,5 @@
 # Page Metadata Parser
-A Javascript library for parsing metadata in web pages.
+A JavaScript library for parsing metadata in web pages.
 
 [![CircleCI](https://circleci.com/gh/mozilla/page-metadata-parser.svg?style=svg)](https://circleci.com/gh/mozilla/page-metadata-parser)
 
