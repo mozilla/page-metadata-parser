@@ -73,6 +73,7 @@ const metadataRules = {
       ['meta[property="og:image:secure_url"]', node => node.element.getAttribute('content')],
       ['meta[property="og:image:url"]', node => node.element.getAttribute('content')],
       ['meta[property="og:image"]', node => node.element.getAttribute('content')],
+      ['meta[name="twitter:image"]', node => node.element.getAttribute('content')],
       ['meta[property="twitter:image"]', node => node.element.getAttribute('content')],
       ['meta[name="thumbnail"]', node => node.element.getAttribute('content')],
     ],
@@ -93,6 +94,7 @@ const metadataRules = {
   title: {
     rules: [
       ['meta[property="og:title"]', node => node.element.getAttribute('content')],
+      ['meta[name="twitter:title"]', node => node.element.getAttribute('content')],
       ['meta[property="twitter:title"]', node => node.element.getAttribute('content')],
       ['meta[name="hdl"]', node => node.element.getAttribute('content')],
       ['title', node => node.element.text],

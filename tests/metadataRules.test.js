@@ -31,6 +31,7 @@ describe('Title Rule Tests', function() {
 
   const ruleTests = [
     ['og:title', `<meta property="og:title" content="${pageTitle}" />`],
+    ['twitter:title', `<meta name="twitter:title" content="${pageTitle}" />`],
     ['twitter:title', `<meta property="twitter:title" content="${pageTitle}" />`],
     ['hdl', `<meta name="hdl" content="${pageTitle}" />`],
     ['title', `<title>${pageTitle}</title>`],
@@ -81,6 +82,7 @@ describe('Image Rule Tests', function() {
     ['og:image', `<meta property="og:image" content="${pageImage}" />`],
     ['og:image:url', `<meta property="og:image:url" content="${pageImage}" /> `],
     ['og:image:secure_url', `<meta property="og:image:secure_url" content="${pageImage}" /> `],
+    ['twitter:image', `<meta name="twitter:image" content="${pageImage}" />`],
     ['twitter:image', `<meta property="twitter:image" content="${pageImage}" />`],
     ['thumbnail', `<meta name="thumbnail" content="${pageImage}" />`],
     ['relative image', `<meta name="thumbnail" content="${relativeImage}" />`],
