@@ -60,6 +60,19 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
   });
 
+  it('uses default favicon when no favicon is found', () => {
+    const noIconHtml = `
+      <html>
+      <head>
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(noIconHtml);
+    const metadata = getMetadata(doc, sampleUrl);
+
+    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${metadata.icon_url}`);
+  });
   it('falls back on provided url when no canonical url found', () => {
     const html = `
       <html>
@@ -86,7 +99,6 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, 'Error finding URL');
     assert.equal(metadata.title, sampleTitle, 'Error finding title');
     assert.equal(metadata.description, sampleDescription, 'Error finding description');
-    assert.equal(Object.keys(metadata).length, 3);
   });
 
   it('allows to create groups of rules', () => {
