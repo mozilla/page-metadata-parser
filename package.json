@@ -52,6 +52,7 @@
     "test:karma": "karma start",
     "test:lint": "eslint .",
     "test:mocha": "istanbul cover _mocha --report lcovonly -- tests/*.test.js -R spec",
-    "clientize": "webpack --optimize-minimize --optimize-dedupe"
+    "bundle": "webpack --optimize-minimize --optimize-dedupe",
+    "clientize": "npm run bundle"
   }
 }
