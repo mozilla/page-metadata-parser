@@ -12,5 +12,7 @@ dependencies:
     - sudo apt-get update && sudo apt-get install libpango1.0-0 libpangocairo-1.0-0 firefox
 
 test:
+  pre:
+    - npm run bundle
   post:
     - npm run cover
