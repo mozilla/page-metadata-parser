@@ -1,7 +1,29 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {getMetadata, metadataRules} = require('../parser');
+const {getProvider, getMetadata, metadataRules} = require('../parser');
 const {stringToDom} = require('./test-utils');
+
+describe('Get Provider Tests', function() {
+  it('gets a provider with no subdomain', function() {
+    assert.equal(getProvider('https://example.com/this/?id=that'), 'example');
+  });
+
+  it('removes www as a subdomain', function() {
+    assert.equal(getProvider('https://www.example.com/this/?id=that'), 'example');
+  });
+
+  it('removes www1 as a subdomain', function() {
+    assert.equal(getProvider('https://www1.example.com/this/?id=that'), 'example');
+  });
+
+  it('preserves non-www subdomains', function() {
+    assert.equal(getProvider('https://things.example.com/this/?id=that'), 'things example');
+  });
+
+  it('removes secondary TLDs', function() {
+    assert.equal(getProvider('https://things.example.co.uk/this/?id=that'), 'things example');
+  });
+});
 
 describe('Get Metadata Tests', function() {
   const sampleDescription = 'A test page.';
@@ -58,6 +80,14 @@ describe('Get Metadata Tests', function() {
 
     assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
     assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
+  });
+
+  it('adds a provider when URL passed in', () => {
+    const sampleProvider = 'example';
+    const doc = stringToDom(sampleHtml);
+    const metadata = getMetadata(doc, sampleUrl);
+
+    assert.equal(metadata.provider, sampleProvider, `Unable to find ${sampleProvider} in ${sampleUrl}`);
   });
 
   it('uses default favicon when no favicon is found', () => {
