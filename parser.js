@@ -11,6 +11,16 @@ function makeUrlAbsolute(base, relative) {
   return relative;
 }
 
+function getProvider(url) {
+  return urlparse.parse(url)
+    .hostname
+    .replace(/www[a-zA-Z0-9]*\./, '')
+    .replace('co.', '')
+    .split('.')
+    .slice(0, -1)
+    .join(' ');
+}
+
 function buildRuleset(name, rules, processors) {
   const reversedRules = Array.from(rules).reverse();
   const builtRuleset = ruleset(...reversedRules.map(([query, handler], order) => rule(
@@ -138,6 +148,11 @@ function getMetadata(doc, url, rules) {
     metadata.url = url;
   }
 
+  metadata.provider = '';
+  if(url) {
+    metadata.provider = getProvider(url);
+  }
+
   if(url && !metadata.icon_url) {
     metadata.icon_url = makeUrlAbsolute(url, '/favicon.ico');
   }
@@ -146,8 +161,9 @@ function getMetadata(doc, url, rules) {
 }
 
 module.exports = {
-  makeUrlAbsolute,
   buildRuleset,
-  metadataRules,
-  getMetadata
+  getMetadata,
+  getProvider,
+  makeUrlAbsolute,
+  metadataRules
 };
