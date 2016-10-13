@@ -67,6 +67,7 @@ Field | Description
 --- | ---
 type | The type of content as defined by [opengraph](http://ogp.me/#types).
 url | A canonical URL for the page.
+provider | A string representation of the sub and primary domains.
 title | A user displayable title for the page.
 description | A user displayable description for the page.
 icon_url | A URL which contains an icon for the page.
