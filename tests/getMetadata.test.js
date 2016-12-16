@@ -33,6 +33,7 @@ describe('Get Metadata Tests', function() {
   const sampleTitle = 'Page Title';
   const sampleType = 'article';
   const sampleUrl = 'http://www.example.com/';
+  const sampleProviderName = 'Example Provider';
 
   const sampleHtml = `
     <html>
@@ -45,6 +46,7 @@ describe('Get Metadata Tests', function() {
       <meta property="og:title" content="${sampleTitle}" />
       <meta property="og:type" content="${sampleType}" />
       <meta property="og:url" content="${sampleUrl}" />
+      <meta property="og:site_name" content="${sampleProviderName}" />
     </head>
     </html>
   `;
@@ -59,6 +61,7 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.title, sampleTitle, `Unable to find ${sampleTitle} in ${sampleHtml}`);
     assert.equal(metadata.type, sampleType, `Unable to find ${sampleType} in ${sampleHtml}`);
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
+    assert.equal(metadata.provider, sampleProviderName, `Unable to find ${sampleProviderName} in ${sampleHtml}`);
   });
 
   it('uses absolute URLs when url parameter passed in', () => {
@@ -83,11 +86,34 @@ describe('Get Metadata Tests', function() {
   });
 
   it('adds a provider when URL passed in', () => {
+      const emptyHtml = `
+        <html>
+        <head>
+        </head>
+        </html>
+    `;
+
     const sampleProvider = 'example';
-    const doc = stringToDom(sampleHtml);
+    const doc = stringToDom(emptyHtml);
     const metadata = getMetadata(doc, sampleUrl);
 
     assert.equal(metadata.provider, sampleProvider, `Unable to find ${sampleProvider} in ${sampleUrl}`);
+  });
+
+  it('prefers open graph site name over URL based provider', () => {
+      const sampleProvider = 'OpenGraph Site Name';
+      const providerHtml = `
+        <html>
+        <head>
+          <meta property="og:site_name" content="${sampleProvider}" />
+        </head>
+        </html>
+    `;
+
+    const doc = stringToDom(providerHtml);
+    const metadata = getMetadata(doc, sampleUrl);
+
+    assert.equal(metadata.provider, sampleProvider, `Unable to find ${sampleProvider} in ${providerHtml}`);
   });
 
   it('uses default favicon when no favicon is found', () => {

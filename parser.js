@@ -126,6 +126,12 @@ const metadataRules = {
       (url, context) => makeUrlAbsolute(context.url, url)
     ]
   },
+
+  provider: {
+    rules: [
+      ['meta[property="og:site_name"]', node => node.element.getAttribute('content')]
+    ]
+  },
 };
 
 function getMetadata(doc, url, rules) {
@@ -148,8 +154,7 @@ function getMetadata(doc, url, rules) {
     metadata.url = url;
   }
 
-  metadata.provider = '';
-  if(url) {
+  if(url && !metadata.provider) {
     metadata.provider = getProvider(url);
   }
 

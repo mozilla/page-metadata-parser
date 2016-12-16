@@ -124,3 +124,14 @@ describe('Keywords Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.keywords, keywords, testTag));
 });
+
+describe('Provider Rule Tests', function() {
+  const provider = 'Example provider';
+
+  const ruleTests = [
+    ['og:type', `<meta property="og:site_name" content="${provider}" />`],
+  ];
+
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.provider, provider, testTag));
+});
+
