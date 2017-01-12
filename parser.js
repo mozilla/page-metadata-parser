@@ -15,7 +15,7 @@ function getProvider(url) {
   return urlparse.parse(url)
     .hostname
     .replace(/www[a-zA-Z0-9]*\./, '')
-    .replace('co.', '')
+    .replace('.co.', '.')
     .split('.')
     .slice(0, -1)
     .join(' ');
