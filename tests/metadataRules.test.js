@@ -71,6 +71,24 @@ describe('Icon Rule Tests', function() {
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.icon_url, pageIcon, testTag));
+
+  it('prefers higher resolution icons', () => {
+    const html = `
+      <html>
+        <head>
+          <link rel="icon" href="small.png" sizes="16x16">
+          <link rel="icon" href="large.png" sizes="32x32">
+          <link rel="icon" href="any.png" sizes="any">
+        </head>
+      </html>
+    `;
+    const doc = stringToDom(html);
+    const rule = buildRuleset('Largest Icon', metadataRules.icon_url.rules, metadataRules.icon_url.processors, metadataRules.icon_url.scorers);
+    const found = rule(doc, {
+      url: 'http://www.example.com/'
+    });
+    assert.deepEqual(found, 'http://www.example.com/large.png', 'icon_rules did not prefer the largest icon');
+  });
 });
 
 
