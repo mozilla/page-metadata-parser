@@ -21,15 +21,29 @@ function getProvider(url) {
     .join(' ');
 }
 
-function buildRuleset(name, rules, processors) {
+function buildRuleset(name, rules, processors, scorers) {
   const reversedRules = Array.from(rules).reverse();
   const builtRuleset = ruleset(...reversedRules.map(([query, handler], order) => rule(
     dom(query),
-    node => [{
-      score: order,
-      flavor: name,
-      notes: handler(node),
-    }]
+    node => {
+      let score = order;
+
+      if (scorers) {
+        scorers.forEach(scorer => {
+          const newScore = scorer(node, score);
+
+          if (newScore) {
+            score = newScore;
+          }
+        });
+      }
+
+      return [{
+        flavor: name,
+        score: score,
+        notes: handler(node),
+      }];
+    }
   )));
 
   return (doc, context) => {
@@ -72,6 +86,22 @@ const metadataRules = {
       ['link[rel="shortcut icon"]', node => node.element.getAttribute('href')],
       ['link[rel="Shortcut Icon"]', node => node.element.getAttribute('href')],
       ['link[rel="mask-icon"]', node => node.element.getAttribute('href')],
+    ],
+    scorers: [
+      // Handles the case where multiple icons are listed with specific sizes ie
+      // <link rel="icon" href="small.png" sizes="16x16">
+      // <link rel="icon" href="large.png" sizes="32x32">
+      (node, score) => {
+        const sizes = node.element.getAttribute('sizes');
+
+        if (sizes) {
+          const sizeMatches = sizes.match(/\d+/g);
+
+          if (sizeMatches) {
+            return sizeMatches.reduce((a, b) => a * b);
+          }
+        }
+      }
     ],
     processors: [
       (icon_url, context) => makeUrlAbsolute(context.url, icon_url)
@@ -143,7 +173,13 @@ function getMetadata(doc, url, rules) {
     const metadataRule = ruleSet[metadataKey];
 
     if(Array.isArray(metadataRule.rules)) {
-      const builtRule = buildRuleset(metadataKey, metadataRule.rules, metadataRule.processors);
+      const builtRule = buildRuleset(
+        metadataKey,
+        metadataRule.rules,
+        metadataRule.processors,
+        metadataRule.scorers
+      );
+
       metadata[metadataKey] = builtRule(doc, context);
     } else {
       metadata[metadataKey] = getMetadata(doc, url, metadataRule);
