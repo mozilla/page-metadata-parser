@@ -71,6 +71,7 @@ provider | A string representation of the sub and primary domains.
 title | A user displayable title for the page.
 description | A user displayable description for the page.
 icon_url | A URL which contains an icon for the page.
+icon_found | A bool which indicates whether an icon was found (true) or whether a default fallback was used (false)
 image_url | A URL which contains a preview image for the page.
 keywords | The meta keywords for the page.
 

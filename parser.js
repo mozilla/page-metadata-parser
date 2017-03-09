@@ -194,6 +194,7 @@ function getMetadata(doc, url, rules) {
     metadata.provider = getProvider(url);
   }
 
+  metadata.icon_found = !!metadata.icon_url;
   if(url && !metadata.icon_url) {
     metadata.icon_url = makeUrlAbsolute(url, '/favicon.ico');
   }
