@@ -82,6 +82,7 @@ describe('Get Metadata Tests', function() {
     const metadata = getMetadata(doc, sampleUrl);
 
     assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
+    assert.equal(metadata.icon_found, true);
     assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
   });
 
@@ -128,6 +129,7 @@ describe('Get Metadata Tests', function() {
     const metadata = getMetadata(doc, sampleUrl);
 
     assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${metadata.icon_url}`);
+    assert.equal(metadata.icon_found, false);
   });
   it('falls back on provided url when no canonical url found', () => {
     const html = `
