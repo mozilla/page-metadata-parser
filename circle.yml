@@ -10,6 +10,7 @@ dependencies:
     - npm install --only=dev
     - npm update
     - sudo apt-get update && sudo apt-get install libpango1.0-0 libpangocairo-1.0-0 firefox
+    - sudo rm /usr/bin/firefox;sudo ln -s $(which firefox.ubuntu) /usr/bin/firefox
 
 test:
   pre:
