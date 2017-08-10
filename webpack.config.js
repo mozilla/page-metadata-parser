@@ -1,5 +1,8 @@
 module.exports = {
-    entry: ['babel-polyfill', './parser.js'],
+    entry: ['./parser.js'],
+    externals: {
+      url: 'window',
+    },
     output: {
         path: './client',
         filename: 'page-metadata-parser.bundle.js',

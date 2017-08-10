@@ -1,19 +1,7 @@
-const urlparse = require('url');
-const {dom, rule, ruleset} = require('fathom-web');
+const {makeUrlAbsolute, parseUrl} = require('./url-utils');
 
-function makeUrlAbsolute(base, relative) {
-  const relativeParsed = urlparse.parse(relative);
-
-  if (relativeParsed.host === null) {
-    return urlparse.resolve(base, relative);
-  }
-
-  return relative;
-}
-
-function getProvider(url) {
-  return urlparse.parse(url)
-    .hostname
+function getProvider(host) {
+  return host
     .replace(/www[a-zA-Z0-9]*\./, '')
     .replace('.co.', '.')
     .split('.')
@@ -22,49 +10,49 @@ function getProvider(url) {
 }
 
 function buildRuleset(name, rules, processors, scorers) {
-  const reversedRules = Array.from(rules).reverse();
-  const builtRuleset = ruleset(...reversedRules.map(([query, handler], order) => rule(
-    dom(query),
-    node => {
-      let score = order;
-
-      if (scorers) {
-        scorers.forEach(scorer => {
-          const newScore = scorer(node, score);
-
-          if (newScore) {
-            score = newScore;
-          }
-        });
-      }
-
-      return [{
-        flavor: name,
-        score: score,
-        notes: handler(node),
-      }];
-    }
-  )));
-
   return (doc, context) => {
-    const kb = builtRuleset.score(doc);
-    const maxNode = kb.max(name);
+    let maxScore = 0;
+    let maxValue;
 
-    if (maxNode) {
-      let value = maxNode.flavors.get(name);
+    for (let currRule = 0; currRule < rules.length; currRule++) {
+      const [query, handler] = rules[currRule];
 
-      if (processors) {
-        processors.forEach(processor => {
-          value = processor(value, context);
-        });
-      }
+      const elements = Array.from(doc.querySelectorAll(query));
 
-      if (value) {
-        if (value.trim) {
-          return value.trim();
+      if(elements.length) {
+        for (const element of elements) {
+          let score = rules.length - currRule;
+
+          if (scorers) {
+            for (const scorer of scorers) {
+              const newScore = scorer(element, score);
+
+              if (newScore) {
+                score = newScore;
+              }
+            }
+          }
+
+          if (score > maxScore) {
+            maxScore = score;
+            maxValue = handler(element);
+          }
         }
-        return value;
       }
+    }
+
+    if (maxValue) {
+      if (processors) {
+        for (const processor of processors) {
+          maxValue = processor(maxValue, context);
+        }
+      }
+
+      if (maxValue.trim) {
+        return maxValue.trim();
+      }
+
+      return maxValue;
     }
   };
 }
@@ -72,27 +60,27 @@ function buildRuleset(name, rules, processors, scorers) {
 const metadataRules = {
   description: {
     rules: [
-      ['meta[property="og:description"]', node => node.element.getAttribute('content')],
-      ['meta[name="description"]', node => node.element.getAttribute('content')],
+      ['meta[property="og:description"]', element => element.getAttribute('content')],
+      ['meta[name="description"]', element => element.getAttribute('content')],
     ],
   },
 
   icon_url: {
     rules: [
-      ['link[rel="apple-touch-icon"]', node => node.element.getAttribute('href')],
-      ['link[rel="apple-touch-icon-precomposed"]', node => node.element.getAttribute('href')],
-      ['link[rel="icon"]', node => node.element.getAttribute('href')],
-      ['link[rel="fluid-icon"]', node => node.element.getAttribute('href')],
-      ['link[rel="shortcut icon"]', node => node.element.getAttribute('href')],
-      ['link[rel="Shortcut Icon"]', node => node.element.getAttribute('href')],
-      ['link[rel="mask-icon"]', node => node.element.getAttribute('href')],
+      ['link[rel="apple-touch-icon"]', element => element.getAttribute('href')],
+      ['link[rel="apple-touch-icon-precomposed"]', element => element.getAttribute('href')],
+      ['link[rel="icon"]', element => element.getAttribute('href')],
+      ['link[rel="fluid-icon"]', element => element.getAttribute('href')],
+      ['link[rel="shortcut icon"]', element => element.getAttribute('href')],
+      ['link[rel="Shortcut Icon"]', element => element.getAttribute('href')],
+      ['link[rel="mask-icon"]', element => element.getAttribute('href')],
     ],
     scorers: [
       // Handles the case where multiple icons are listed with specific sizes ie
       // <link rel="icon" href="small.png" sizes="16x16">
       // <link rel="icon" href="large.png" sizes="32x32">
-      (node, score) => {
-        const sizes = node.element.getAttribute('sizes');
+      (element, score) => {
+        const sizes = element.getAttribute('sizes');
 
         if (sizes) {
           const sizeMatches = sizes.match(/\d+/g);
@@ -110,12 +98,12 @@ const metadataRules = {
 
   image_url: {
     rules: [
-      ['meta[property="og:image:secure_url"]', node => node.element.getAttribute('content')],
-      ['meta[property="og:image:url"]', node => node.element.getAttribute('content')],
-      ['meta[property="og:image"]', node => node.element.getAttribute('content')],
-      ['meta[name="twitter:image"]', node => node.element.getAttribute('content')],
-      ['meta[property="twitter:image"]', node => node.element.getAttribute('content')],
-      ['meta[name="thumbnail"]', node => node.element.getAttribute('content')],
+      ['meta[property="og:image:secure_url"]', element => element.getAttribute('content')],
+      ['meta[property="og:image:url"]', element => element.getAttribute('content')],
+      ['meta[property="og:image"]', element => element.getAttribute('content')],
+      ['meta[name="twitter:image"]', element => element.getAttribute('content')],
+      ['meta[property="twitter:image"]', element => element.getAttribute('content')],
+      ['meta[name="thumbnail"]', element => element.getAttribute('content')],
     ],
     processors: [
       (image_url, context) => makeUrlAbsolute(context.url, image_url)
@@ -124,7 +112,7 @@ const metadataRules = {
 
   keywords: {
     rules: [
-      ['meta[name="keywords"]', node => node.element.getAttribute('content')],
+      ['meta[name="keywords"]', element => element.getAttribute('content')],
     ],
     processors: [
       (keywords) => keywords.split(',').map((keyword) => keyword.trim()),
@@ -133,24 +121,24 @@ const metadataRules = {
 
   title: {
     rules: [
-      ['meta[property="og:title"]', node => node.element.getAttribute('content')],
-      ['meta[name="twitter:title"]', node => node.element.getAttribute('content')],
-      ['meta[property="twitter:title"]', node => node.element.getAttribute('content')],
-      ['meta[name="hdl"]', node => node.element.getAttribute('content')],
-      ['title', node => node.element.text],
+      ['meta[property="og:title"]', element => element.getAttribute('content')],
+      ['meta[name="twitter:title"]', element => element.getAttribute('content')],
+      ['meta[property="twitter:title"]', element => element.getAttribute('content')],
+      ['meta[name="hdl"]', element => element.getAttribute('content')],
+      ['title', element => element.text],
     ],
   },
 
   type: {
     rules: [
-      ['meta[property="og:type"]', node => node.element.getAttribute('content')],
+      ['meta[property="og:type"]', element => element.getAttribute('content')],
     ],
   },
 
   url: {
     rules: [
-      ['meta[property="og:url"]', node => node.element.getAttribute('content')],
-      ['link[rel="canonical"]', node => node.element.getAttribute('href')],
+      ['meta[property="og:url"]', element => element.getAttribute('content')],
+      ['link[rel="canonical"]', element => element.getAttribute('href')],
     ],
     processors: [
       (url, context) => makeUrlAbsolute(context.url, url)
@@ -159,14 +147,17 @@ const metadataRules = {
 
   provider: {
     rules: [
-      ['meta[property="og:site_name"]', node => node.element.getAttribute('content')]
+      ['meta[property="og:site_name"]', element => element.getAttribute('content')]
     ]
   },
 };
 
 function getMetadata(doc, url, rules) {
   const metadata = {};
-  const context = {url};
+  const context = {
+    url,
+  };
+
   const ruleSet = rules || metadataRules;
 
   Object.keys(ruleSet).map(metadataKey => {
@@ -191,7 +182,7 @@ function getMetadata(doc, url, rules) {
   }
 
   if(url && !metadata.provider) {
-    metadata.provider = getProvider(url);
+    metadata.provider = getProvider(parseUrl(url));
   }
 
   metadata.icon_found = !!metadata.icon_url;
@@ -206,6 +197,5 @@ module.exports = {
   buildRuleset,
   getMetadata,
   getProvider,
-  makeUrlAbsolute,
   metadataRules
 };

@@ -1,11 +1,13 @@
 if (global.DOMParser !== undefined) {
-  const parser = new DOMParser();
+  // We're in Firefox
   module.exports = {
     stringToDom(str) {
+      const parser = new DOMParser();
       return parser.parseFromString(str, 'text/html');
     }
   };
 } else {
+  // We're in Node.js
   const domino = require('domino');
   module.exports = {
     stringToDom(str) {

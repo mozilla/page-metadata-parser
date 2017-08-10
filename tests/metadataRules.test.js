@@ -152,4 +152,3 @@ describe('Provider Rule Tests', function() {
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.provider, provider, testTag));
 });
-
