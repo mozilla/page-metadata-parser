@@ -9,22 +9,22 @@ function getProvider(host) {
     .join(' ');
 }
 
-function buildRuleset(name, rules, processors, scorers) {
+function buildRuleSet(ruleSet) {
   return (doc, context) => {
     let maxScore = 0;
     let maxValue;
 
-    for (let currRule = 0; currRule < rules.length; currRule++) {
-      const [query, handler] = rules[currRule];
+    for (let currRule = 0; currRule < ruleSet.rules.length; currRule++) {
+      const [query, handler] = ruleSet.rules[currRule];
 
       const elements = Array.from(doc.querySelectorAll(query));
 
       if(elements.length) {
         for (const element of elements) {
-          let score = rules.length - currRule;
+          let score = ruleSet.rules.length - currRule;
 
-          if (scorers) {
-            for (const scorer of scorers) {
+          if (ruleSet.scorers) {
+            for (const scorer of ruleSet.scorers) {
               const newScore = scorer(element, score);
 
               if (newScore) {
@@ -41,15 +41,19 @@ function buildRuleset(name, rules, processors, scorers) {
       }
     }
 
+    if (!maxValue && ruleSet.defaultValue) {
+      maxValue = ruleSet.defaultValue(context);
+    }
+
     if (maxValue) {
-      if (processors) {
-        for (const processor of processors) {
+      if (ruleSet.processors) {
+        for (const processor of ruleSet.processors) {
           maxValue = processor(maxValue, context);
         }
       }
 
       if (maxValue.trim) {
-        return maxValue.trim();
+        maxValue = maxValue.trim();
       }
 
       return maxValue;
@@ -57,7 +61,7 @@ function buildRuleset(name, rules, processors, scorers) {
   };
 }
 
-const metadataRules = {
+const metadataRuleSets = {
   description: {
     rules: [
       ['meta[property="og:description"]', element => element.getAttribute('content')],
@@ -65,7 +69,7 @@ const metadataRules = {
     ],
   },
 
-  icon_url: {
+  icon: {
     rules: [
       ['link[rel="apple-touch-icon"]', element => element.getAttribute('href')],
       ['link[rel="apple-touch-icon-precomposed"]', element => element.getAttribute('href')],
@@ -91,12 +95,13 @@ const metadataRules = {
         }
       }
     ],
+    defaultValue: (context) => 'favicon.ico',
     processors: [
       (icon_url, context) => makeUrlAbsolute(context.url, icon_url)
     ]
   },
 
-  image_url: {
+  image: {
     rules: [
       ['meta[property="og:image:secure_url"]', element => element.getAttribute('content')],
       ['meta[property="og:image:url"]', element => element.getAttribute('content')],
@@ -115,7 +120,7 @@ const metadataRules = {
       ['meta[name="keywords"]', element => element.getAttribute('content')],
     ],
     processors: [
-      (keywords) => keywords.split(',').map((keyword) => keyword.trim()),
+      (keywords, context) => keywords.split(',').map((keyword) => keyword.trim())
     ]
   },
 
@@ -140,6 +145,7 @@ const metadataRules = {
       ['meta[property="og:url"]', element => element.getAttribute('content')],
       ['link[rel="canonical"]', element => element.getAttribute('href')],
     ],
+    defaultValue: (context) => context.url,
     processors: [
       (url, context) => makeUrlAbsolute(context.url, url)
     ]
@@ -148,54 +154,32 @@ const metadataRules = {
   provider: {
     rules: [
       ['meta[property="og:site_name"]', element => element.getAttribute('content')]
-    ]
+    ],
+    defaultValue: (context) => getProvider(parseUrl(context.url))
   },
 };
 
-function getMetadata(doc, url, rules) {
+function getMetadata(doc, url, customRuleSets) {
   const metadata = {};
   const context = {
     url,
   };
 
-  const ruleSet = rules || metadataRules;
+  const ruleSets = customRuleSets || metadataRuleSets;
 
-  Object.keys(ruleSet).map(metadataKey => {
-    const metadataRule = ruleSet[metadataKey];
+  Object.keys(ruleSets).map(ruleSetKey => {
+    const ruleSet = ruleSets[ruleSetKey];
+    const builtRuleSet = buildRuleSet(ruleSet);
 
-    if(Array.isArray(metadataRule.rules)) {
-      const builtRule = buildRuleset(
-        metadataKey,
-        metadataRule.rules,
-        metadataRule.processors,
-        metadataRule.scorers
-      );
-
-      metadata[metadataKey] = builtRule(doc, context);
-    } else {
-      metadata[metadataKey] = getMetadata(doc, url, metadataRule);
-    }
+    metadata[ruleSetKey] = builtRuleSet(doc, context);
   });
-
-  if(!metadata.url) {
-    metadata.url = url;
-  }
-
-  if(url && !metadata.provider) {
-    metadata.provider = getProvider(parseUrl(url));
-  }
-
-  metadata.icon_found = !!metadata.icon_url;
-  if(url && !metadata.icon_url) {
-    metadata.icon_url = makeUrlAbsolute(url, '/favicon.ico');
-  }
 
   return metadata;
 }
 
 module.exports = {
-  buildRuleset,
+  buildRuleSet,
   getMetadata,
   getProvider,
-  metadataRules
+  metadataRuleSets
 };

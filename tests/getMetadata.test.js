@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {getProvider, getMetadata, metadataRules} = require('../parser');
+const {getProvider, getMetadata, metadataRuleSets} = require('../parser');
 const {stringToDom} = require('./test-utils');
 const {parseUrl} = require('../url-utils');
 
@@ -54,11 +54,11 @@ describe('Get Metadata Tests', function() {
 
   it('parses metadata', () => {
     const doc = stringToDom(sampleHtml);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
     assert.equal(metadata.description, sampleDescription, `Unable to find ${sampleDescription} in ${sampleHtml}`);
-    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${sampleHtml}`);
-    assert.equal(metadata.image_url, sampleImageHTTPS, `Unable to find ${sampleImageHTTPS} in ${sampleHtml}`);
+    assert.equal(metadata.icon, sampleIcon, `Unable to find ${sampleIcon} in ${sampleHtml}`);
+    assert.equal(metadata.image, sampleImageHTTPS, `Unable to find ${sampleImageHTTPS} in ${sampleHtml}`);
     assert.equal(metadata.title, sampleTitle, `Unable to find ${sampleTitle} in ${sampleHtml}`);
     assert.equal(metadata.type, sampleType, `Unable to find ${sampleType} in ${sampleHtml}`);
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
@@ -80,11 +80,10 @@ describe('Get Metadata Tests', function() {
     `;
 
     const doc = stringToDom(relativeHtml);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
-    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
-    assert.equal(metadata.icon_found, true);
-    assert.equal(metadata.image_url, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
+    assert.equal(metadata.icon, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
+    assert.equal(metadata.image, sampleImageHTTP, `Unable to find ${sampleImageHTTP} in ${relativeHtml}`);
   });
 
   it('adds a provider when URL passed in', () => {
@@ -97,7 +96,7 @@ describe('Get Metadata Tests', function() {
 
     const sampleProvider = 'example';
     const doc = stringToDom(emptyHtml);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
     assert.equal(metadata.provider, sampleProvider, `Unable to find ${sampleProvider} in ${sampleUrl}`);
   });
@@ -113,7 +112,7 @@ describe('Get Metadata Tests', function() {
     `;
 
     const doc = stringToDom(providerHtml);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
     assert.equal(metadata.provider, sampleProvider, `Unable to find ${sampleProvider} in ${providerHtml}`);
   });
@@ -127,10 +126,9 @@ describe('Get Metadata Tests', function() {
     `;
 
     const doc = stringToDom(noIconHtml);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
-    assert.equal(metadata.icon_url, sampleIcon, `Unable to find ${sampleIcon} in ${metadata.icon_url}`);
-    assert.equal(metadata.icon_found, false);
+    assert.equal(metadata.icon, sampleIcon, `Unable to find ${sampleIcon} in ${metadata.icon}`);
   });
   it('falls back on provided url when no canonical url found', () => {
     const html = `
@@ -141,7 +139,7 @@ describe('Get Metadata Tests', function() {
     `;
 
     const doc = stringToDom(html);
-    const metadata = getMetadata(doc, sampleUrl, metadataRules);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
 
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${JSON.stringify(metadata)}`);
   });
@@ -149,8 +147,9 @@ describe('Get Metadata Tests', function() {
   it('allows custom rules', () => {
     const doc = stringToDom(sampleHtml);
     const rules = {
-      title: metadataRules.title,
-      description: metadataRules.description
+      url: metadataRuleSets.url,
+      title: metadataRuleSets.title,
+      description: metadataRuleSets.description
     };
 
     const metadata = getMetadata(doc, sampleUrl, rules);
@@ -159,33 +158,4 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.title, sampleTitle, 'Error finding title');
     assert.equal(metadata.description, sampleDescription, 'Error finding description');
   });
-
-  it('allows to create groups of rules', () => {
-    const doc = stringToDom(sampleHtml);
-    const rules = {
-      openGraph: {
-        title: metadataRules.title,
-        description: metadataRules.description,
-        type: metadataRules.type,
-        url: metadataRules.url
-      },
-      media: {
-        icon: metadataRules.icon_url,
-        image: metadataRules.image_url
-      }
-    };
-
-    const metadata = getMetadata(doc, sampleUrl, rules);
-    assert.isObject(metadata.openGraph);
-    assert.isObject(metadata.media);
-
-    assert.equal(metadata.openGraph.title, sampleTitle, 'Error finding title');
-    assert.equal(metadata.openGraph.description, sampleDescription, 'Error finding description');
-    assert.equal(metadata.openGraph.type, sampleType, 'Error finding type');
-    assert.equal(metadata.openGraph.url, sampleUrl, 'Error finding url');
-
-    assert.equal(metadata.media.icon, sampleIcon, 'Error finding icon');
-    assert.equal(metadata.media.image, sampleImageHTTPS, 'Error finding image');
-  });
-
 });
