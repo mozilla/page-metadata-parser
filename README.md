@@ -5,20 +5,23 @@ A Javascript library for parsing metadata in web pages.
 
 [![Coverage Status](https://coveralls.io/repos/github/mozilla/page-metadata-parser/badge.svg?branch=master)](https://coveralls.io/github/mozilla/page-metadata-parser?branch=master)
 
-
-## Installation
-
-    npm install --save page-metadata-parser
-
 ## Overview
 
-### Requirements
+### Purpose
 
-This library is meant to be used either in the browser (embedded directly in a website or into a browser addon/extension) or on a server (node.js).
+The purpose of this library is to be able to find a consistent set of metadata for any given web page.  Each individual kind of metadata has many rules which define how it may be located.  For example, a description of a page could be found in any of the following DOM elements:
 
-Each function expects to be passed a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object, which may be created either directly by a browser or on the server using a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) compatible object, such as that provided by [jsdom](https://github.com/tmpvar/jsdom).
+    <meta name="description" content="A page's description"/>
 
-You may use each rule individually, or together to parse all of the metadata provided by this library.
+    <meta property="og:description" content="A page's description" />
+
+Because different web pages represent their metadata in any number of possible DOM elements, the Page Metadata Parser collects rules for different ways a given kind of metadata may be represented and abstracts them away from the caller.
+
+The output of the metadata parser for the above example would be
+
+    {description: "A page's description"}
+
+regardless of which particular kind of description tag was used.
 
 ### Supported schemas
 
@@ -30,21 +33,67 @@ This library employs parsers for the following formats:
 
 [meta tags](https://developer.mozilla.org/en/docs/Web/HTML/Element/meta)
 
+### Requirements
+
+This library is meant to be used either in the browser (embedded directly in a website or into a browser addon/extension) or on a server (node.js).
+
+The parser depends only on the [Node URL library](https://nodejs.org/api/url.html) or the [Browser URL library](https://developer.mozilla.org/en-US/docs/Web/API/Document/URL). 
+
+Each function expects to be passed a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object, which may be created either directly by a browser or on the server using a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) compatible object, such as that provided by [jsdom](https://github.com/tmpvar/jsdom).
+
+## Usage
+
+### Installation
+
+    npm install --save page-metadata-parser
+
+### Usage in the browser
+
+The library can be built to be deployed directly to a modern browser by using
+
+    npm run bundle
+
+and embedding the resultant js file directly into a page like so:
+
+    <script src="page-metadata-parser.bundle.js" type="text/javascript" />
+
+    <script>
+
+      const metadata = metadataparser.getMetadata(window.document, window.location);
+
+      console.log("The page's title is ", metadata.title);
+
+    </script>
+
+### Usage in node
+
+To use the library in node, you must first construct a DOM API compatible object from an HTML string, for example:
+
+    const {getMetadata} = require('page-metadata-parser');
+
+    const url = 'https://github.com/mozilla/page-metadata-parser';
+    const response = await fetch(url);
+    const html = await response.text();
+    const doc = new JSDOM(html);
+    const metadata = getMetadata(doc, url);
+
+## Metadata Rules
+
 ### Rules
 
-This library is based on the work of [Mozilla Fathom](https://github.com/mozilla/fathom), a framework for using rules to parse content on web pages.
+A single rule instructs the parser on a possible DOM node to locate a specific piece of content.  
 
-A single rule instructs the parser on a possible DOM node to locate a specific piece of content.  For instance, a rule to parse the title of a page might look like
+For instance, a rule to parse the title of a page found in a DOM tag like this:
 
-    ['meta[property="og:title"]', node => node.element.getAttribute('content')]
+    <meta property="og:title" content="Page Title" />
 
-A rule consists of two parts, a [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) compatible string which is used to look up the target content, and a callable which receives a Node (a wrapper around a DOM element) and returns the desired content from that Node.
+Would be represented with the following rule:
 
-This rule would be able to successfully find a page's title from the following HTML sample:
+    ['meta[property="og:title"]', element => element.getAttribute('content')]
 
-    <meta property="og:title" content="A Sample Page" />
+A rule consists of two parts, a [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector) compatible string which is used to look up the target content, and a callable which receives an [element](https://developer.mozilla.org/en-US/docs/Web/API/Element) and returns the desired content from that element.
 
-Many rules together form a Rule Set.  This library will apply each rule to a page and choose the 'best' result.  In our case, the order in which rules are defined indicate their preference, with the first rule being the most preferred.  A Rule Set can be defined like so:
+Many rules together form a Rule Set.  This library will apply each rule to a page and choose the 'best' result.  The order in which rules are defined indicate their preference, with the first rule being the most preferred.  A Rule Set can be defined like so:
 
     const titleRules = {
       rules: [
@@ -57,77 +106,51 @@ In this case, the OpenGraph title will be preferred over the title tag.
 
 This library includes many rules for a single desired piece of metadata which should allow it to consistently find metadata across many types of pages.  This library is meant to be a community driven effort, and so if there is no rule to find a piece of information from a particular website, contributors are encouraged to add new rules!
 
-## Usage
+### Built-in Rule Sets 
 
-### Using a single rule
-
-This library provides rules to find the following forms of metadata in a page:
+This library provides rule sets to find the following forms of metadata in a page:
 
 Field | Description
 --- | ---
-type | The type of content as defined by [opengraph](http://ogp.me/#types).
-url | A canonical URL for the page.
+description | A user displayable description for the page.
+icon | A URL which contains an icon for the page.
+image | A URL which contains a preview image for the page.
+keywords | The meta keywords for the page.
 provider | A string representation of the sub and primary domains.
 title | A user displayable title for the page.
-description | A user displayable description for the page.
-icon_url | A URL which contains an icon for the page.
-icon_found | A bool which indicates whether an icon was found (true) or whether a default fallback was used (false)
-image_url | A URL which contains a preview image for the page.
-keywords | The meta keywords for the page.
+type | The type of content as defined by [opengraph](http://ogp.me/#types).
+url | A canonical URL for the page.
 
-To use a single rule to find a particular piece of metadata within a page, simply pass that rule  and a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object to getMetadata and it will apply each possible selector for that rule until it finds a matching piece of information and return it.
+To use a single rule set to find a particular piece of metadata within a page, simply pass that rule set, a URL,  and a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object to getMetadata and it will apply each possible rule for that rule set until it finds a matching piece of information and return it.
 
 Example:
 
-    const {getMetadata, metadataRules} = require('page-metadata-parser');
+    const {getMetadata, metadataRuleSets} = require('page-metadata-parser');
 
-    const pageTitle = getMetadata(doc, {title: metadataRules.title});
+    const pageTitle = getMetadata(doc, url, {title: metadataRuleSets.title});
 
 
 ### Extending a single rule
 
-To add your own additional custom parser to an existing rule, you can simply push it into that rule's array.
+To add your own additional custom rule to an existing rule set, you can simply push it into that rule sets's array.
 
 Example:
 
+    const {getMetadata, metadataRuleSets} = require('page-metadata-parser');
 
-    const {getMetadata, metadataRules} = require('page-metadata-parser');
+    const customDescriptionRuleSet = metadataRuleSets.description;
 
-    const customDescriptionRules = metadataRules.description;
-
-    customDescriptionRules.push([
-      ['meta[name="customDescription"]', node => node.element.content]
+    customDescriptionRuleSet.rules.push([
+      ['meta[name="customDescription"]', element => element.getAttribute('content')]
     ]);
 
-    const pageDescription = getMetadata(doc, {description: customDescriptionRules});
+    const pageDescription = getMetadata(doc, url, {description: customDescriptionRuleSet});
 
 
 ### Using all rules
 
-To parse all of the available metadata on a page using all of the rules provided in this library, simply call getMetadata on the [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document).
+To parse all of the available metadata on a page using all of the rule sets provided in this library, simply call getMetadata on the [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document).
 
-    const {getMetadata, metadataRules} = require('page-metadata-parser');
+    const {getMetadata, metadataRuleSets} = require('page-metadata-parser');
 
-    const pageMetadata = getMetadata(doc, metadataRules);
-
-
-### Nesting rules
-
-You can nest rules into arbitrarily deep object structures which will mirror the structure of the returned metadata payload.
-
-Example:
-
-    const {getMetadata, metadataRules} = require('page-metadata-parser');
-
-    const nestedMetadataRules = {
-      images: {
-        preview: metadataRules.image_url,
-        icon: metadataRules.icon_url,
-      },
-      text: {
-        title: metadataRules.title,
-        description: metadataRules.description,
-      }
-    };
-
-    const nestedMetadata = getMetadata(doc, nestedMetadataRules); 
+    const pageMetadata = getMetadata(doc, url);

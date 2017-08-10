@@ -1,6 +1,6 @@
 // Tests for parse.js
 const {assert} = require('chai');
-const {buildRuleset, metadataRules} = require('../parser');
+const {buildRuleSet, metadataRuleSets} = require('../parser');
 const {stringToDom} = require('./test-utils');
 
 function buildHTML(tag) {
@@ -17,7 +17,7 @@ function ruleTest(testName, testRule, expected, testTag) {
   it(`finds ${testName}`, () => {
     const html = buildHTML(testTag);
     const doc = stringToDom(html);
-    const rule = buildRuleset(testName, testRule.rules, testRule.processors);
+    const rule = buildRuleSet(testRule);
     const found = rule(doc, {
       url: 'http://www.example.com/'
     });
@@ -37,7 +37,7 @@ describe('Title Rule Tests', function() {
     ['title', `<title>${pageTitle}</title>`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.title, pageTitle, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.title, pageTitle, testTag));
 });
 
 
@@ -51,7 +51,7 @@ describe('Canonical URL Rule Tests', function() {
     ['relative canonical', `<link rel="canonical" href="${relativeUrl}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.url, pageUrl, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.url, pageUrl, testTag));
 });
 
 
@@ -70,7 +70,7 @@ describe('Icon Rule Tests', function() {
     ['relative icon', `<link rel="icon" href="${relativeIcon}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.icon_url, pageIcon, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.icon, pageIcon, testTag));
 
   it('prefers higher resolution icons', () => {
     const html = `
@@ -83,7 +83,7 @@ describe('Icon Rule Tests', function() {
       </html>
     `;
     const doc = stringToDom(html);
-    const rule = buildRuleset('Largest Icon', metadataRules.icon_url.rules, metadataRules.icon_url.processors, metadataRules.icon_url.scorers);
+    const rule = buildRuleSet(metadataRuleSets.icon);
     const found = rule(doc, {
       url: 'http://www.example.com/'
     });
@@ -106,7 +106,7 @@ describe('Image Rule Tests', function() {
     ['relative image', `<meta name="thumbnail" content="${relativeImage}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.image_url, pageImage, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.image, pageImage, testTag));
 });
 
 
@@ -118,7 +118,7 @@ describe('Description Rule Tests', function() {
     ['description', `<meta name="description" content="${pageDescription}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.description, pageDescription, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.description, pageDescription, testTag));
 });
 
 
@@ -129,7 +129,7 @@ describe('Type Rule Tests', function() {
     ['og:type', `<meta property="og:type" content="${pageType}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.type, pageType, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.type, pageType, testTag));
 });
 
 
@@ -140,7 +140,7 @@ describe('Keywords Rule Tests', function() {
     ['keywords', `<meta name="keywords" content="${keywords.join(', ')}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.keywords, keywords, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.keywords, keywords, testTag));
 });
 
 describe('Provider Rule Tests', function() {
@@ -150,5 +150,20 @@ describe('Provider Rule Tests', function() {
     ['og:type', `<meta property="og:site_name" content="${provider}" />`],
   ];
 
-  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRules.provider, provider, testTag));
+  ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.provider, provider, testTag));
+
+  it('falls back to parsing the URL to find the provider', () => {
+    const html = `
+      <html>
+        <head>
+        </head>
+      </html>
+    `;
+    const doc = stringToDom(html);
+    const rule = buildRuleSet(metadataRuleSets.provider);
+    const found = rule(doc, {
+      url: 'http://www.example.com/'
+    });
+    assert.deepEqual(found, 'example', 'Failed to parse the URl to find the default provider');
+  });
 });
