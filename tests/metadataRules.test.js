@@ -49,6 +49,7 @@ describe('Canonical URL Rule Tests', function() {
     ['og:url', `<meta property="og:url" content="${pageUrl}" />`],
     ['rel=canonical', `<link rel="canonical" href="${pageUrl}" />`],
     ['relative canonical', `<link rel="canonical" href="${relativeUrl}" />`],
+    ['amp-canurl', `<a class="amp-canurl" href="${pageUrl}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.url, pageUrl, testTag));
