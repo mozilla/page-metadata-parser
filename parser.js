@@ -143,8 +143,8 @@ const metadataRuleSets = {
   url: {
     rules: [
       ['a.amp-canurl', element => element.getAttribute('href')],
-      ['meta[property="og:url"]', element => element.getAttribute('content')],
       ['link[rel="canonical"]', element => element.getAttribute('href')],
+      ['meta[property="og:url"]', element => element.getAttribute('content')],
     ],
     defaultValue: (context) => context.url,
     processors: [

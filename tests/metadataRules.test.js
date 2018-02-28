@@ -53,6 +53,19 @@ describe('Canonical URL Rule Tests', function() {
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.url, pageUrl, testTag));
+
+  const wrongPageUrl = 'http://example.com/incorrect-page.html';
+  const ruleOrderingTests = [
+    ['rel=canonical before og:url', `
+      <link rel="canonical" href="${pageUrl}"/>
+      <meta property="og:url" content="${wrongPageUrl}" />
+    `],
+    ['amp-canurl before rel=canonical', `
+      <a class="amp-canurl" href="${pageUrl}" />
+      <link rel="canonical" href=${wrongPageUrl}/>
+    `],
+  ];
+  ruleOrderingTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.url, pageUrl, testTag));
 });
 
 
