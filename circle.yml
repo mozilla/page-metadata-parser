@@ -1,7 +1,4 @@
 machine:
-  environment:
-    COVERALLS_REPO_TOKEN: Vf8OYui1kwrD3HoOBefD4K0sbgpOVz7JO
-
   node:
     version: 6.2
 
@@ -15,5 +12,3 @@ dependencies:
 test:
   pre:
     - npm run bundle
-  post:
-    - npm run cover
