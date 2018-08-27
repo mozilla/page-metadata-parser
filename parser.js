@@ -64,20 +64,20 @@ function buildRuleSet(ruleSet) {
 const metadataRuleSets = {
   description: {
     rules: [
-      ['meta[property="og:description"]', element => element.getAttribute('content')],
-      ['meta[name="description"]', element => element.getAttribute('content')],
+      ['meta[property~="og:description"][content]', element => element.getAttribute('content')],
+      ['meta[name="description"][content]', element => element.getAttribute('content')],
     ],
   },
 
   icon: {
     rules: [
-      ['link[rel="apple-touch-icon"]', element => element.getAttribute('href')],
-      ['link[rel="apple-touch-icon-precomposed"]', element => element.getAttribute('href')],
-      ['link[rel="icon"]', element => element.getAttribute('href')],
-      ['link[rel="fluid-icon"]', element => element.getAttribute('href')],
-      ['link[rel="shortcut icon"]', element => element.getAttribute('href')],
-      ['link[rel="Shortcut Icon"]', element => element.getAttribute('href')],
-      ['link[rel="mask-icon"]', element => element.getAttribute('href')],
+      ['link[rel~="apple-touch-icon"][href]', element => element.getAttribute('href')],
+      ['link[rel~="apple-touch-icon-precomposed"][href]', element => element.getAttribute('href')],
+      ['link[rel~="icon"][href]', element => element.getAttribute('href')],
+      ['link[rel~="fluid-icon"][href]', element => element.getAttribute('href')],
+      ['link[rel~="shortcut icon"][href]', element => element.getAttribute('href')],
+      ['link[rel~="Shortcut Icon"][href]', element => element.getAttribute('href')],
+      ['link[rel~="mask-icon"][href]', element => element.getAttribute('href')],
     ],
     scorers: [
       // Handles the case where multiple icons are listed with specific sizes ie
@@ -103,12 +103,12 @@ const metadataRuleSets = {
 
   image: {
     rules: [
-      ['meta[property="og:image:secure_url"]', element => element.getAttribute('content')],
-      ['meta[property="og:image:url"]', element => element.getAttribute('content')],
-      ['meta[property="og:image"]', element => element.getAttribute('content')],
-      ['meta[name="twitter:image"]', element => element.getAttribute('content')],
-      ['meta[property="twitter:image"]', element => element.getAttribute('content')],
-      ['meta[name="thumbnail"]', element => element.getAttribute('content')],
+      ['meta[property~="og:image:secure_url"][content]', element => element.getAttribute('content')],
+      ['meta[property~="og:image:url"][content]', element => element.getAttribute('content')],
+      ['meta[property~="og:image"][content]', element => element.getAttribute('content')],
+      ['meta[name="twitter:image"][content]', element => element.getAttribute('content')],
+      ['meta[property~="twitter:image"][content]', element => element.getAttribute('content')],
+      ['meta[name="thumbnail"][content]', element => element.getAttribute('content')],
     ],
     processors: [
       (image_url, context) => makeUrlAbsolute(context.url, image_url)
@@ -126,25 +126,25 @@ const metadataRuleSets = {
 
   title: {
     rules: [
-      ['meta[property="og:title"]', element => element.getAttribute('content')],
-      ['meta[name="twitter:title"]', element => element.getAttribute('content')],
-      ['meta[property="twitter:title"]', element => element.getAttribute('content')],
-      ['meta[name="hdl"]', element => element.getAttribute('content')],
+      ['meta[property~="og:title"][content]', element => element.getAttribute('content')],
+      ['meta[name="twitter:title"][content]', element => element.getAttribute('content')],
+      ['meta[property~="twitter:title"][content]', element => element.getAttribute('content')],
+      ['meta[name="hdl"][content]', element => element.getAttribute('content')],
       ['title', element => element.text],
     ],
   },
 
   type: {
     rules: [
-      ['meta[property="og:type"]', element => element.getAttribute('content')],
+      ['meta[property~="og:type"][content]', element => element.getAttribute('content')],
     ],
   },
 
   url: {
     rules: [
       ['a.amp-canurl', element => element.getAttribute('href')],
-      ['link[rel="canonical"]', element => element.getAttribute('href')],
-      ['meta[property="og:url"]', element => element.getAttribute('content')],
+      ['link[rel~="canonical"][href]', element => element.getAttribute('href')],
+      ['meta[property~="og:url"][content]', element => element.getAttribute('content')],
     ],
     defaultValue: (context) => context.url,
     processors: [
@@ -154,7 +154,7 @@ const metadataRuleSets = {
 
   provider: {
     rules: [
-      ['meta[property="og:site_name"]', element => element.getAttribute('content')]
+      ['meta[property~="og:site_name"][content]', element => element.getAttribute('content')]
     ],
     defaultValue: (context) => getProvider(parseUrl(context.url))
   },
