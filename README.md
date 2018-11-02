@@ -39,7 +39,7 @@ This library is meant to be used either in the browser (embedded directly in a w
 
 The parser depends only on the [Node URL library](https://nodejs.org/api/url.html) or the [Browser URL library](https://developer.mozilla.org/en-US/docs/Web/API/Document/URL). 
 
-Each function expects to be passed a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object, which may be created either directly by a browser or on the server using a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) compatible object, such as that provided by [jsdom](https://github.com/tmpvar/jsdom).
+Each function expects to be passed a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) object, which may be created either directly by a browser or on the server using a [Document](https://developer.mozilla.org/en-US/docs/Web/API/Document) compatible object, such as that provided by [domino](https://github.com/fgnass/domino).
 
 ## Usage
 
@@ -70,11 +70,12 @@ and embedding the resultant js file directly into a page like so:
 To use the library in node, you must first construct a DOM API compatible object from an HTML string, for example:
 
     const {getMetadata} = require('page-metadata-parser');
+    const domino = require('domino');
 
     const url = 'https://github.com/mozilla/page-metadata-parser';
     const response = await fetch(url);
     const html = await response.text();
-    const doc = new JSDOM(html);
+    const doc = domino.createWindow(html).document;
     const metadata = getMetadata(doc, url);
 
 ## Metadata Rules
