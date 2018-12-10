@@ -15,7 +15,7 @@
     "babel-preset-es2015": "^6.14.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
-    "domino": "^1.0.25",
+    "domino": "^2.1.0",
     "eslint": "^2.13.1",
     "eslint-plugin-mozilla": "^0.0.3",
     "istanbul": "^0.4.4",

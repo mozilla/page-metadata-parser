@@ -144,6 +144,26 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${JSON.stringify(metadata)}`);
   });
 
+  it('it fetches keywords, icon and description from uppercased metadata property titles', () => {
+    const relativeHtml = `
+      <html>
+      <head>
+        <meta name="Description" content="${sampleDescription}" />
+        <meta name="Keywords" content="${sampleTitle}" />
+        <link rel="Icon" href="/favicon.ico" />
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(relativeHtml);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
+
+    assert.equal(metadata.icon, sampleIcon, `Unable to find ${sampleIcon} in ${relativeHtml}`);
+    assert.equal(metadata.description, sampleDescription, `Unable to find ${sampleDescription} in ${relativeHtml}`);
+    assert.equal(metadata.keywords, sampleTitle, `Unable to find ${sampleTitle} in ${relativeHtml}`);
+
+  });
+
   it('allows custom rules', () => {
     const doc = stringToDom(sampleHtml);
     const rules = {

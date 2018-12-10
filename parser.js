@@ -65,7 +65,7 @@ const metadataRuleSets = {
   description: {
     rules: [
       ['meta[property="og:description"]', element => element.getAttribute('content')],
-      ['meta[name="description"]', element => element.getAttribute('content')],
+      ['meta[name="description" i]', element => element.getAttribute('content')],
     ],
   },
 
@@ -73,7 +73,7 @@ const metadataRuleSets = {
     rules: [
       ['link[rel="apple-touch-icon"]', element => element.getAttribute('href')],
       ['link[rel="apple-touch-icon-precomposed"]', element => element.getAttribute('href')],
-      ['link[rel="icon"]', element => element.getAttribute('href')],
+      ['link[rel="icon" i]', element => element.getAttribute('href')],
       ['link[rel="fluid-icon"]', element => element.getAttribute('href')],
       ['link[rel="shortcut icon"]', element => element.getAttribute('href')],
       ['link[rel="Shortcut Icon"]', element => element.getAttribute('href')],
@@ -117,7 +117,7 @@ const metadataRuleSets = {
 
   keywords: {
     rules: [
-      ['meta[name="keywords"]', element => element.getAttribute('content')],
+      ['meta[name="keywords" i]', element => element.getAttribute('content')],
     ],
     processors: [
       (keywords, context) => keywords.split(',').map((keyword) => keyword.trim())
