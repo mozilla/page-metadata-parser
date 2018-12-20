@@ -134,6 +134,16 @@ const metadataRuleSets = {
     ],
   },
 
+  language: {
+    rules: [
+      ['html[lang]', element => element.getAttribute('lang')],
+      ['meta[name="language" i]', element => element.getAttribute('content')],
+    ],
+    processors: [
+      (language, context) => language.split('-')[0]
+    ]
+  },
+
   type: {
     rules: [
       ['meta[property="og:type"]', element => element.getAttribute('content')],

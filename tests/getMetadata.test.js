@@ -35,9 +35,11 @@ describe('Get Metadata Tests', function() {
   const sampleType = 'article';
   const sampleUrl = 'http://www.example.com/';
   const sampleProviderName = 'Example Provider';
+  const sampleLanguage = 'en';
+
 
   const sampleHtml = `
-    <html>
+    <html lang="en-CA">
     <head>
       <meta property="og:description" content="${sampleDescription}" />
       <link rel="icon" href="${sampleIcon}" />
@@ -63,6 +65,8 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.type, sampleType, `Unable to find ${sampleType} in ${sampleHtml}`);
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
     assert.equal(metadata.provider, sampleProviderName, `Unable to find ${sampleProviderName} in ${sampleHtml}`);
+    assert.equal(metadata.language, sampleLanguage, `Unable to find ${sampleLanguage} in ${sampleHtml}`);
+
   });
 
   it('uses absolute URLs when url parameter passed in', () => {
@@ -162,6 +166,21 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.description, sampleDescription, `Unable to find ${sampleDescription} in ${relativeHtml}`);
     assert.equal(metadata.keywords, sampleTitle, `Unable to find ${sampleTitle} in ${relativeHtml}`);
 
+  });
+
+  it('finds language in metadata', () => {
+    const html = `
+      <html>
+      <head>
+        <meta name="language" content="en-CA" />
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(html);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
+
+    assert.equal(metadata.language, sampleLanguage, `Unable to find ${sampleLanguage} in ${html}`);
   });
 
   it('allows custom rules', () => {
