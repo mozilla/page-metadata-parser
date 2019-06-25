@@ -88,9 +88,8 @@ const metadataRuleSets = {
 
         if (sizes) {
           const sizeMatches = sizes.match(/\d+/g);
-
           if (sizeMatches) {
-            return sizeMatches.reduce((a, b) => a * b);
+            return sizeMatches[0];
           }
         }
       }
