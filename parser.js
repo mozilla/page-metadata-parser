@@ -89,7 +89,10 @@ const metadataRuleSets = {
         if (sizes) {
           const sizeMatches = sizes.match(/\d+/g);
           if (sizeMatches) {
-            return sizeMatches[0];
+            const parsed = parseInt(sizeMatches[0]);
+            if (!isNaN(parsed)) {
+              return parsed;
+            }
           }
         }
       }
