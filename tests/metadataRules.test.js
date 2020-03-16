@@ -92,6 +92,7 @@ describe('Icon Rule Tests', function() {
         <head>
           <link rel="icon" href="small.png" sizes="16x16">
           <link rel="icon" href="large.png" sizes="32x32">
+          <link rel="icon" href="super_large.png" sizes="180x180">
           <link rel="icon" href="any.png" sizes="any">
         </head>
       </html>
@@ -101,7 +102,7 @@ describe('Icon Rule Tests', function() {
     const found = rule(doc, {
       url: 'http://www.example.com/'
     });
-    assert.deepEqual(found, 'http://www.example.com/large.png', 'icon_rules did not prefer the largest icon');
+    assert.deepEqual(found, 'http://www.example.com/super_large.png', 'icon_rules did not prefer the largest icon');
   });
 });
 
