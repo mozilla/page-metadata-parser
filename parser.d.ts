@@ -1,7 +1,7 @@
 export interface IPageMetadata {
   description?: string
   icon: string
-  img?: string
+  image?: string
   keywords?: string[]
   title?: string
   language?: string
