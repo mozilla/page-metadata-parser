@@ -172,7 +172,6 @@ const metadataRuleSets = {
     rules: [
       ['meta[property~="article:published_time"]', element => element.getAttribute('content')],
       ['meta[property~="og:updated_time"]', element => element.getAttribute('content')],
-      ['meta[name~="parsely-pub-date"]', element => element.getAttribute('content')],
     ],
   },
 };
