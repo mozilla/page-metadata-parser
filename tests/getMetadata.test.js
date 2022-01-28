@@ -36,6 +36,7 @@ describe('Get Metadata Tests', function() {
   const sampleUrl = 'http://www.example.com/';
   const sampleProviderName = 'Example Provider';
   const sampleLanguage = 'en';
+  const samplePublishedDate = '2022-01-28T12:11:55+01:00';
 
 
   const sampleHtml = `
@@ -50,6 +51,7 @@ describe('Get Metadata Tests', function() {
       <meta property="og:type" content="${sampleType}" />
       <meta property="og:url" content="${sampleUrl}" />
       <meta property="og:site_name" content="${sampleProviderName}" />
+      <meta property="og:updated_time" content="${samplePublishedDate}" />
     </head>
     </html>
   `;
@@ -66,6 +68,7 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, `Unable to find ${sampleUrl} in ${sampleHtml}`);
     assert.equal(metadata.provider, sampleProviderName, `Unable to find ${sampleProviderName} in ${sampleHtml}`);
     assert.equal(metadata.language, sampleLanguage, `Unable to find ${sampleLanguage} in ${sampleHtml}`);
+    assert.equal(metadata.publishedDate, samplePublishedDate, `Unable to find ${samplePublishedDate} in ${sampleHtml}`);
 
   });
 
@@ -196,5 +199,20 @@ describe('Get Metadata Tests', function() {
     assert.equal(metadata.url, sampleUrl, 'Error finding URL');
     assert.equal(metadata.title, sampleTitle, 'Error finding title');
     assert.equal(metadata.description, sampleDescription, 'Error finding description');
+  });
+
+  it('finds published date in metadata', () => {
+    const html = `
+      <html>
+      <head>
+        <meta property="article:published_time" content="${samplePublishedDate}" />
+      </head>
+      </html>
+    `;
+
+    const doc = stringToDom(html);
+    const metadata = getMetadata(doc, sampleUrl, metadataRuleSets);
+
+    assert.equal(metadata.publishedDate, samplePublishedDate, `Unable to find ${samplePublishedDate} in ${html}`);
   });
 });
