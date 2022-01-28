@@ -188,7 +188,6 @@ describe('Published Date Rule Tests', function() {
   const ruleTests = [
     ['article:published_time', `<meta property="article:published_time" content="${publishedDate}" />`],
     ['og:updated_time', `<meta property="og:updated_time" content="${publishedDate}" />`],
-    ['parsely-pub-date', `<meta name="parsely-pub-date" content="${publishedDate}" />`],
   ];
 
   ruleTests.map(([testName, testTag]) => ruleTest(testName, metadataRuleSets.publishedDate, publishedDate, testTag));
